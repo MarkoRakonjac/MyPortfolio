@@ -1,0 +1,140 @@
+.work-experience {
+    padding: 40px 0;
+    background-color: #f4f4f4;
+    position: relative;
+    height: 100%;
+
+    &:after {
+        content: '';
+        position: absolute;
+        width: 2px;
+        height: 70%;
+        background-color: #4684c1;
+        bottom: 0;
+        left: 50%;
+        transform: translate(-50%);
+    }
+
+    h2 {
+        margin-bottom: 30px;
+    }
+
+    .experience-left, .experience-right {
+        background-color: #edf4fb;
+        border: 1px solid #4684c1;
+        width: 80%;
+        margin: 0 auto;
+        border-radius: 20px;
+        margin-bottom: 40px;
+        padding: 10px 20px;
+        position: relative;
+
+        h3 {}
+
+        h4 {
+            color: #F26183;
+        }
+    }
+
+    .experience-left {
+        z-index: 1;
+
+        &:after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            right: -15px;
+            bottom: 25px;
+            transform: rotate(45deg);
+            background-color: #edf4fb;
+            border: 1px solid;
+            border-color: #4684c1 #4684c1 transparent transparent;
+            z-index: -1;
+        }
+    }
+
+    .experience-right {
+        z-index: 1;
+
+        &:after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            left: -15px;
+            top: 25px;
+            transform: rotate(45deg);
+            background-color: #edf4fb;
+            border: 1px solid;
+            border-color: transparent transparent #4684c1 #4684c1;
+            z-index: -1;
+        }
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .work-experience {
+        .experience-left, .experience-right {
+            width: 100%;
+        }
+
+
+
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .work-experience {
+                padding: 150px 0;
+                &:after {
+                    height: 63%;
+                }
+
+                .experience-left {
+                    top: 60px;
+            &:before {
+                content: '';
+                position: absolute;
+                width: 26px;
+                height: 26px;
+                background-color: #fff;
+                border: 2px solid #4684c1;
+                border-radius: 50%;
+                right: -110px;
+                bottom: 0;
+                z-index: 1;
+            }
+        }
+        .experience-right {
+            &:before {
+                content: '';
+                position: absolute;
+                width: 26px;
+                height: 26px;
+                background-color: #fff;
+                border: 2px solid #4684c1;
+                border-radius: 50%;
+                left: -110px;
+                top: 0;
+                z-index: 1;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .work-experience {
+        .experience-left {
+            &:before {
+                right: -126px;
+            }
+        }
+
+        .experience-right {
+            &:before {
+                left: -126px;
+            }
+        }
+    }
+}
