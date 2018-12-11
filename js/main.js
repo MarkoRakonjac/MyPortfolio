@@ -2,6 +2,7 @@ window.onbeforeunload = function () {
   window.scrollTo(0, 0);
 }
 
+
 let btn = document.querySelector('.nav-btn');
 let nav = document.querySelector('nav');
 let aboutBtn = document.querySelector('.about-btn');
@@ -11,6 +12,7 @@ let skillsBtn = document.querySelector('.skills-btn');
 let navBtns = document.querySelectorAll('[data-btn]');
 let contact = document.querySelectorAll('.contact');
 let count = 0;
+
 
 
 btn.addEventListener('click',openCloseNav);
@@ -41,10 +43,14 @@ navBtns.forEach(function(e) {
 
 
 function openCloseNav() {
-	   count++;
-    $(btn).children('.bar-2').css({
-        left: '-2000px'
-    });;
+
+    count++;
+
+    if (count == 1) {
+        $(btn).children('.bar-2').css({
+        transition: .4 + "s",
+        left: '-1000px'
+    });
     $(btn).children('.bar-1').css({
         transform: 'rotate(' + 45 + 'deg)',
         top: 0 + 'px',
@@ -59,9 +65,7 @@ function openCloseNav() {
     });
 
     $('body').addClass('stop-scrolling')
-
-
-    if (count == 2) {
+    } else {
         count = 0;
         $('body').removeClass('stop-scrolling');
         $(btn).children('.bar-2').css({
@@ -80,6 +84,6 @@ function openCloseNav() {
             left: '-100%',
         });
     }
-
-
 }
+
+

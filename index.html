@@ -16,28 +16,32 @@
 			<div class="container">
 				<div class="header-title">
 					<h1 class="title">Rakonjac Marko</h1>
-					<p>Front-end developer</p>
+					<p>Frontend developer</p>
 				</div>
 				
+			</div>
+		</header>
+		<!-- Main header END-->
+		<section class="navigation">
+			<!-- Nav -->
+			<div class="nav-btn-holder">
 				<div class="nav-btn">
 					<span class="bar-1"></span>
 					<span class="bar-2"></span>
 					<span class="bar-3"></span>
 				</div>
 			</div>
-		</header>
-		<!-- Main header END-->
-		<!-- Nav -->
-		<nav>
-			<ul >
-				<li><a data-btn="about-me" href="">About me</a></li>
-				<li><a data-btn="work-experience" href="">Experience</a></li>
-				<li><a data-btn="education" href="">Education</a></li>
-				<li><a data-btn="skills" href="">My Skills</a></li>
-				<li><a data-btn="contact" href="https://www.w3schools.com/Jsref/met_element_scrollintoview.asp">Contact</a></li>
-			</ul>
-		</nav>
-		<!-- Nav END -->
+			<nav>
+				<ul >
+					<li><a data-btn="about-me" href="">About me</a></li>
+					<li><a data-btn="work-experience" href="">Portfolio</a></li>
+					<!-- <li><a data-btn="education" href="">Education</a></li> -->
+					<li><a data-btn="skills" href="">My Skills</a></li>
+					<li><a data-btn="contact" href="">Contact</a></li>
+				</ul>
+			</nav>
+			<!-- Nav END -->
+		</section>
 		<!-- Main  -->
 		<main>
 			
@@ -48,21 +52,13 @@
 						<div class="col-lg-6 col-md-6 col-sm-12">
 							<article class="info-about-me">
 								<h2>About me</h2>
-								<p>I am a Frontend developer with hands on latest trends in web development. My right hand is html5, my left hand is css3 and my favorite weapon is Bootstrap. My skills also include Javascript, jQuery, BEM methodology, Photoshop, Avocode, Zeplin. </p>
-								<ul>
-									<li><span>Name :</span> Rakonjac Marko</li>
-									<li><span>Age :</span> 28</li>
-									<li><span>Email :</span> maximumbg89@gmail.com</li>
-									<li><span>Web :</span> www</li>
-									<li><span>Address :</span> Dejana Smiljkovica 108</li>
-								</ul>
+								<p>Hi, my name is Marko, and I'm junior web developer. I think there is no thing that a man can't learn with enough effort and dedication. It was my motto when I entered the programming. Every day, I'm looking for ways to improve my knowledge in order to write a clean and sustainable code.  </p>
 							</article>
 						</div>
 						<div class="col-lg-5 col-md-6 col-sm-12 col-lg-offset-1 ">
-							<div class="img-holder">
+							<article class="img-holder">
 								<img class="img-responsive" src="img/myphoto.jpg" alt="">
-							</div>
-							
+							</article>
 						</div>
 					</div>
 				</div>
@@ -72,20 +68,64 @@
 			<!-- Work Experience -->
 			<section class="work-experience">
 				<div class="container">
-					<h2>Work Experience</h2>
+					<h2>Portfolio</h2>
 					<div class="row">
-						<div class="col-lg-5 col-md-5 col-sm-10 col-sm-offset-2 col-lg-offset-0 col-md-offset-0" >
-							<article class="experience-left">
-								<h3>Internship <span>@krojaceva skola</span></h3>
-								<h4>Dec 2017 - Mar 2018</h4>
-								<p>
-								Work on projects, work in the team, learning new skills.</p>
-							</article>
-						</div>
-						<div class="col-lg-5 col-md-5 col-sm-10  col-lg-push-2 col-md-push-2 ">
-							<article class="experience-right">
-								<h3>Freelancer <span>@upwork</span></h3>
-								<h4>June 2017</h4>
+						<div class="col-lg-12 ">
+							<article class="projects">
+								<div class="project-item1">
+									<div class="outter">
+										<a href="https://www.beamge.com/" class="inner" target="blank">
+											<div class="img-holder">
+												<img class="img-responsive" src="img/project1.png" alt="">
+											</div>
+										</a>
+									</div>
+								</div>
+								<div class="project-item2">
+									<div class="outter">
+										<a href="https://markorakonjac.github.io/Shop/" class="inner" target="blank">
+											<div class="img-holder">
+												<img class="img-responsive" src="img/project2.png" alt="">
+											</div>
+										</a>
+									</div>
+								</div>
+								<div class="project-item3">
+									<div class="outter">
+										<a href="https://markorakonjac.github.io/MemoryGame/" class="inner" target="blank">
+											<div class="img-holder">
+												<img class="img-responsive" src="img/memory-game.png" alt="">
+											</div>
+										</a>
+									</div>
+								</div>
+								<div class="project-item4">
+									<div class="outter">
+										<a href="" class="inner" data-toggle="modal" data-target="#weatherModal">
+											<div class="img-holder">
+												<img class="img-responsive" src="img/weather.png" alt="">
+											</div>
+										</a>
+									</div>
+								</div>
+								<div class="project-item5">
+									<div class="outter">
+										<a href="" class="inner" data-toggle="modal" data-target="#logoModal"">
+											<div class="img-holder">
+												<img class="img-responsive" src="img/logo.jpg" alt="">
+											</div>
+										</a>
+									</div>
+								</div>
+								<div class="project-item6">
+									<div class="outter">
+										<a href="" class="inner">
+											<div class="img-holder">
+												<!-- <img class="img-responsive" src="img/vaucer.png" alt=""> -->
+											</div>
+										</a>
+									</div>
+								</div>
 							</article>
 						</div>
 					</div>
@@ -93,27 +133,27 @@
 			</section>
 			<!-- Work Experience  END-->
 			<!-- EDducation -->
-			<section class="education">
+			<!-- 			<section class="education">
 				<div class="container">
 					<h2>Education</h2>
 					<div class="row">
-						<div class="col-lg-5 col-md-5 col-sm-10 col-sm-offset-2 col-lg-offset-0 col-md-offset-0">
-							<article class="education-left">
-								<h3>Frontend developer <span>@Krojac School </span></h3>
-								<h4>Dec 2017 - Mar 2018</h4>
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, non!</p>
-							</article>
-						</div>
-						<div class="col-lg-5 col-md-5 col-sm-10 col-lg-push-2 col-md-push-2 ">
-							<article class="education-right">
-								<h3>Faculty of Culture and Media<span></span></h3>
-								<h4>Sep 2010 - Jan 2014</h4>
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, non!</p>
-							</article>
-						</div>
+									<div class="col-lg-5 col-md-5 col-sm-10 col-sm-offset-2 col-lg-offset-0 col-md-offset-0">
+													<article class="education-left">
+																	<h3>Frontend developer <span>@Krojac School </span></h3>
+																	<h4>Dec 2017 - Mar 2018</h4>
+																	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, non!</p>
+													</article>
+									</div>
+									<div class="col-lg-5 col-md-5 col-sm-10 col-lg-push-2 col-md-push-2 ">
+													<article class="education-right">
+																	<h3>Faculty of Culture and Media<span></span></h3>
+																	<h4>Sep 2010 - Jan 2014</h4>
+																	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, non!</p>
+													</article>
+									</div>
 					</div>
 				</div>
-			</section>
+			</section> -->
 			<!-- Education END-->
 			<section class="skills">
 				<div class="container">
@@ -130,13 +170,13 @@
 							</div>
 							<p>JavaScript</p>
 							<div class="progress">
-								<div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+								<div class="progress-bar" role="progressbar" style="width: 65%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
 							</div>
 						</div>
 						<div class="col-lg-4 col-md-4 col-sm-10 col-sm-push-1 col-md-push-0">
 							<p>JQuery</p>
 							<div class="progress">
-								<div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+								<div class="progress-bar" role="progressbar" style="width: 65%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
 							</div>
 							<p>Bootstrap</p>
 							<div class="progress">
@@ -154,7 +194,7 @@
 							</div>
 							<p>Git</p>
 							<div class="progress">
-								<div class="progress-bar" role="progressbar" style="width: 65%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+								<div class="progress-bar" role="progressbar" style="width: 100%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
 							</div>
 							<p>Responsive design</p>
 							<div class="progress">
@@ -209,12 +249,45 @@
 							<ul>
 								<li><a href="https://www.linkedin.com/in/marko-rakonjac//" target="blank">linkedin</a></li>
 								<li><a href="https://github.com/MarkoRakonjac" target="blank">github</a></li>
+								<li><a href="https://www.upwork.com/o/profiles/users/_~010053dcdec3c8f879/" target="blank">upwork</a></li>
 							</ul>
 						</article>
 					</section>
 				</footer>
+				<!-- Weather Modal -->
+				<div class="modal fade" id="weatherModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+								<h3 class="modal-title" id="myModalLabel">Weather app <br> HTML/CSS/JavaScript</h3>
+							</div>
+							<div class="modal-body">
+								<img src="img/weather-app.gif" alt="" class="img-responsive">
+							</div>
+						</div>
+					</div>
+				</div>
+								<!-- Logo Modal -->
+				<div class="modal fade" id="logoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+								<h3 class="modal-title" id="myModalLabel">Logo Design </h3>
+							</div>
+							<div class="modal-body">
+								<h4>Military logo Design</h4>
+								<img src="img/logo.jpg" alt="" class="img-responsive">
+								<h4>Full color Design</h4>
+								<img src="img/logo1.jpg" alt="" class="img-responsive">
+							</div>
+						</div>
+					</div>
+				</div>
 			</main>
 			<script src="js/main.js"></script>
 			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		</body>
 	</html>

@@ -1,5 +1,6 @@
 .social-links {
     background-color: #f4f4f4;
+    margin-top: 60px;
     padding: 10px 0;
     text-align: center;
 
@@ -34,12 +35,25 @@
                 border-radius: 50%;
                 display: block;
                 text-indent: -9999px;
-                background: url("../img/socIcons.png") -78px -8px;
+                background: url("../img/socIcons1.png") -78px -8px;
                 transition: all 0.3s;
             }
         }
 
         & li:nth-child(2) {
+            margin-right: 20px;
+
+            a {
+                width: 50px;
+                line-height: 50px;
+                border-radius: 50%;
+                display: block;
+                text-indent: -9999px;
+                background: url("../img/socIcons1.png") -12px -8px;
+                transition: all 0.3s;
+            }
+        }
+            & li:nth-child(3) {
             margin-right: 0;
 
             a {
@@ -48,7 +62,7 @@
                 border-radius: 50%;
                 display: block;
                 text-indent: -9999px;
-                background: url("../img/socIcons.png") -12px -8px;
+                background: url("../img/socIcons1.png") -144px -8px;
                 transition: all 0.3s;
             }
         }
@@ -68,7 +82,7 @@
             & li:first-child {
                 a {
                     &:hover {
-                        background: url("../img/socIcons.png") -78px -52px;
+                        background: url("../img/socIcons1.png") -78px -52px;
                     }
                 }
             }
@@ -76,7 +90,14 @@
             & li:nth-child(2) {
                 a {
                     &:hover {
-                        background: url("../img/socIcons.png") -12px -56px;
+                        background: url("../img/socIcons1.png") -12px -56px;
+                    }
+                }
+            }
+             & li:nth-child(3) {
+                a {
+                    &:hover {
+                        background: url("../img/socIcons1.png") -144px -52px;
                     }
                 }
             }

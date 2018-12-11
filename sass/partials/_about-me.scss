@@ -1,6 +1,7 @@
 .about-me {
     position: relative;
     height: 100%;
+    padding-top: 60px;
 
     .info-about-me {
         margin-top: 20px;
@@ -13,7 +14,7 @@
 
         p {
             margin-bottom: 20px;
-            font-size: 14px;
+            font-size: 20px;
             text-align: center;
         }
 
@@ -37,7 +38,6 @@
 
         img {
             margin: 0 auto;
-            height: 50vh;
         }
     }
 }
@@ -61,9 +61,6 @@
     .about-me {
      padding: 60px 0 0;
       .info-about-me {
-          p {
-            font-size: 16px;
-        }
         li {
             font-size: 20px;
         }
@@ -71,4 +68,12 @@
     }
 }
 
-@media screen and (min-width: 1200px) {}
+@media screen and (min-width: 1200px) {
+        .about-me {
+      .info-about-me {
+        p {
+            font-size: 24px;
+        }
+      }
+    }
+}
