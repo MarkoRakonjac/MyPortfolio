@@ -1,0 +1,107 @@
+
+    <div class="bottom--footer">
+
+        {% if section.settings.footer_text %}
+            <div class="footer-description footer-description--{{ section.settings.alignment }}">
+                {{ section.settings.footer_text }}
+            </div>
+        {% endif %}
+        {% render 'localization-selectors', show_locale_selector: section.settings.show_locale_selector, show_currency_selector: section.settings.show_currency_selector, direction: "up" %}
+        <div class="bottom--footer-row grid{% unless section.settings.show_methods_of_payment %} bottom--footer-no--no-payments{% endunless %}">
+            <div class="grid__item large--one-quarter medium--one-whole small--one-whole">
+                <div id="widget-container" class="ekomi-widget-container ekomi-widget-sf1128075edfac11919a4" ></div>
+                <script type="text/javascript">
+
+                    (function (w) {
+                        w['_ekomiWidgetsServerUrl'] = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//widgets.ekomi.com';
+                        w['_customerId'] = 112807;
+                        w['_ekomiDraftMode'] = true;
+                        w['_language'] = 'es';
+
+                        if(typeof(w['_ekomiWidgetTokens']) !== 'undefined'){
+                            w['_ekomiWidgetTokens'][w['_ekomiWidgetTokens'].length] = 'sf1128075edfac11919a4';
+                        } else {
+                            w['_ekomiWidgetTokens'] = new Array('sf1128075edfac11919a4');
+                        }
+
+                        if(typeof(ekomiWidgetJs) == 'undefined') {
+                            ekomiWidgetJs = true;
+
+                            var scr = document.createElement('script');scr.src = 'https://sw-assets.ekomiapps.de/static_resources/widget.js';
+                            var head = document.getElementsByTagName('head')[0];head.appendChild(scr);
+                        }
+                    })(window);
+                </script>
+            </div>
+            <div class="grid__item large--two-quarters medium--one-whole small--one-whole">
+                {% if section.settings.show_methods_of_payment %}
+                    {%- assign enabled_payment_types = shop.enabled_payment_types -%}
+                    {%- assign payment_icons_available = 'amazon_payments,american_express,apple_pay,bitcoin,cirrus,dankort,diners_club,discover,dogecoin,dwolla,forbrugsforeningen,interac,jcb,litecoin,maestro,master,paypal,stripe,visa' | split: ',' -%}
+
+                    {% comment %}
+                        Uncomment next line to show all icons
+                    {%- assign enabled_payment_types = payment_icons_available -%}
+                    {% endcomment %}
+
+                    {% unless enabled_payment_types == empty %}
+                        <ul class="inline-list payment-icons">
+                            {% for type in shop.enabled_payment_types %}
+                                {{ type | payment_type_svg_tag: class:'payment-icon' }}
+                            {% endfor %}
+                        </ul>
+                    {% endunless %}
+                {% endif %}
+
+                <ul class="bottom--footer---links">
+                    <li><a href="{{ routes.root_url }}">&copy; {{ 'now' | date: "%Y" }}, {{ shop.name }}</a></li>
+                </ul>
+            </div>
+            <div class="grid__item large--one-quarter medium--one-whole small--one-whole">
+                {% if section.blocks.size>0 %}
+                    <div class="delivery_logos">
+                        {% for block in section.blocks %}
+                            {% if block.settings.image != blank %}
+                                <div class="delivery_logos__item">
+                                    {% comment ls-rpl %}{%- assign img_url = block.settings.image | img_url: '100x' -%}{% endcomment %}{%- capture LS_IMG_URL -%}{%- render "ls-img-url", image: block.settings.image, img_url: '100x' -%}{%- endcapture -%}{%- assign img_url = LS_IMG_URL -%}{% comment /ls-rpl %}{% endcomment %}
+                                    <img src="{{ img_url }}" alt="">
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% schema %}
+    {
+    "name": "Footer bottom",
+    "settings": [
+    {
+    "type": "checkbox",
+    "id": "show_methods_of_payment",
+    "label": {
+    "en": "Show payment icons",
+    "de": "Zahlungssymbole anzeigen",
+    "es": "Mostrar iconos de pago",
+    "fr": "Afficher les icônes de paiement",
+    "pt-PT": "Mostrar ícones de pagamento"
+    },
+    "default":true
+    }
+    ],
+    "blocks": [
+    {
+    "type": "delivery_logo",
+    "name": "Delivery logo",
+    "settings": [
+    {
+    "type": "image_picker",
+    "id": "image",
+    "label": "Logo"
+    }
+    ]
+    }
+    ]
+    }
+{% endschema %}

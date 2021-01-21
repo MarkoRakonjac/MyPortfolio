@@ -1,0 +1,9 @@
+development:
+  password: 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
+  theme_id: "97097842824"
+  store: laumont-b2c.myshopify.com
+  ignore_files:
+  - .history/*
+  - .git/*
+  - config/settings_data.json
+  timeout: 2m0s

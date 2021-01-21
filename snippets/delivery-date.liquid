@@ -1,0 +1,29 @@
+{% assign flag = 0 %}
+{% for item in cart.items %}
+	{% if item.product.tags contains 'no-delivery-date' %}   
+		
+	{% else %}
+        {% assign flag = 1 %}
+    {% endif %}              	
+{% endfor %}<input type="hidden" id="ztpl-current-date" value="{{ 'now' | date: '%d' }}" />
+<input type="hidden" id="ztpl-store-hour" value="{{ 'now' | date: '%H' }}" />
+<input type="hidden" id="ztpl-store-minute" value="{{ 'now' | date: '%M' }}" />
+<input type="hidden" id="ztpl-date-format-ddmmyy" value="{{ 'now' | date: '%d-%m-%Y' }}" />
+<input type="hidden" id="ztpl-date-format-yymmdd" value="{{ 'now' | date: '%Y-%m-%d' }}" />
+{{ 'https://zestardshop.com/shopifyapp/DeliveryDatePro/public/css/jquery-ui.css' | stylesheet_tag }}{% if flag == 1 %}<div id="datepicker_box" class="additional-css">	
+	<p class="date-box">
+		<label for="delivery-date-pro"></label>
+		<input id="delivery-date-pro" type="text" name="attributes[Delivery-Date]" value="{{ cart.attributes.Delivery-Date }}" readonly="readonly" disabled />
+	</p>
+	<span id="selected_format"></span>
+	<label id="delivery-time-label" style="display:none" ></label>
+	<select id="delivery-time" name="attributes[Delivery-Time]" style="display:none" readonly="readonly">
+	<option id="time_option_label" value=""></option>
+	</select>
+	<span id="admin_notes"></span>
+</div>
+{% endif %}<script>
+var store_timezone_offset = "{{ 'now' | date: '%Z' }}";
+
+</script>
+{{ 'https://zestardshop.com/shopifyapp/DeliveryDatePro/public/js/snippets.js' | script_tag }}{{ 'https://zestardshop.com/shopifyapp/DeliveryDatePro/public/css/zestard-deliverydatepro-snippet.css' | stylesheet_tag }}

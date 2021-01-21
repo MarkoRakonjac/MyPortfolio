@@ -1,0 +1,208 @@
+Element.prototype.appendAfter = function (element) {
+    element.parentNode.insertBefore(this, element.nextSibling);
+},false;
+Element.prototype.appendBefore = function (element) {
+    element.parentNode.insertBefore(this, element);
+},false;
+if (!Array.prototype.includes) {
+    Object.defineProperty(Array.prototype, 'includes', {
+        value: function(searchElement, fromIndex) {
+
+            if (this == null) {
+                throw new TypeError('"this" is null or not defined');
+            }
+
+            // 1. Let O be ? ToObject(this value).
+            var o = Object(this);
+
+            // 2. Let len be ? ToLength(? Get(O, "length")).
+            var len = o.length >>> 0;
+
+            // 3. If len is 0, return false.
+            if (len === 0) {
+                return false;
+            }
+
+            // 4. Let n be ? ToInteger(fromIndex).
+            //    (If fromIndex is undefined, this step produces the value 0.)
+            var n = fromIndex | 0;
+
+            // 5. If n ≥ 0, then
+            //  a. Let k be n.
+            // 6. Else n < 0,
+            //  a. Let k be len + n.
+            //  b. If k < 0, let k be 0.
+            var k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
+
+            function sameValueZero(x, y) {
+                return x === y || (typeof x === 'number' && typeof y === 'number' && isNaN(x) && isNaN(y));
+            }
+
+            // 7. Repeat, while k < len
+            while (k < len) {
+                // a. Let elementK be the result of ? Get(O, ! ToString(k)).
+                // b. If SameValueZero(searchElement, elementK) is true, return true.
+                if (sameValueZero(o[k], searchElement)) {
+                    return true;
+                }
+                // c. Increase k by 1.
+                k++;
+            }
+
+            // 8. Return false
+            return false;
+        }
+    });
+}
+function checkNIF(nif) {
+    nif = nif.toUpperCase().replace(/[\s\-]+/g, '');
+    if (/^(\d|[XYZ])\d{7}[A-Z]$/.test(nif)) {
+        var num = nif.match(/\d+/);
+        num = (nif[0] != 'Z' ? nif[0] != 'Y' ? 0 : 1 : 2) + num;
+        if (nif[8] == 'TRWAGMYFPDXBNJZSQVHLCKE'[num % 23]) {
+            return /^\d/.test(nif) ? 'DNI' : 'NIE';
+        }
+    }
+    else if (/^[ABCDEFGHJKLMNPQRSUVW]\d{7}[\dA-J]$/.test(nif)) {
+        for (var sum = 0, i = 1; i < 8; ++i) {
+            var num = nif[i] << i % 2;
+            var uni = num % 10;
+            sum += (num - uni) / 10 + uni;
+        }
+        var c = (10 - sum % 10) % 10;
+        if (nif[8] == c || nif[8] == 'JABCDEFGHI'[c]) {
+            return /^[KLM]/.test(nif) ? 'ESP' : 'CIF';
+        }
+    }
+    return false;
+}
+function decodeHTMLEntities(text) {
+    var entities = [
+        ['amp', '&'],
+        ['apos', '\''],
+        ['#x27', '\''],
+        ['#x2F', '/'],
+        ['#39', '\''],
+        ['#47', '/'],
+        ['lt', '<'],
+        ['gt', '>'],
+        ['nbsp', ' '],
+        ['quot', '"']
+    ];
+
+    for (var i = 0, max = entities.length; i < max; ++i)
+        text = text.replace(new RegExp('&'+entities[i][0]+';', 'g'), entities[i][1]);
+
+    return text;
+}
+document.addEventListener('DOMContentLoaded', function () {
+    if (Shopify.Checkout.step === "contact_information") {
+        document.querySelector('#checkout_buyer_accepts_marketing').checked = true;
+    }
+    var country = document.querySelector('.js-data-country').getAttribute('data-country');
+    var province = document.querySelector('.js-data-country').getAttribute('data-province');
+    var listProvince = ['GC','CE','ML','TF'];
+    if (Shopify.Checkout.step === "shipping_method" && country =='ES' && listProvince.includes(province)!=true){
+        var el = document.querySelector('.section__content');
+        var left = '';
+        var price = (45 - parseInt(document.querySelector('.payment-due__price').getAttribute('data-checkout-payment-due-target'), 10) / 100).toFixed(2);
+        if (price > 0 && price < 45) {
+            el.innerHTML+="<br><p><small>{{ 'checkout.general.shippingtext' | t }} "+'</small></p>';
+        }
+    }
+
+    el = document.querySelector('.step[data-step="payment_method"] .step__footer');
+    if (el != undefined && el != null) {
+        var field = document.createElement("div");
+        innerHTML =
+            '<div class="fieldset"><div  class="field "><br><div class="checkbox__input">\n' +
+            '<input class="input-checkbox" type="checkbox"  name="terms_and_conditions"  id="checkout_terms_and_conditions">\n' +
+            '  </div>\n' +
+            '  <label class="checkbox__label js-modal-toggle" for="checkout_terms_and_conditions">\n' +
+            '</label><p class="field__message field__message--error" id="error-for-checkout_terms_and_conditions">{{ "checkout.general.accept_conditions"| t  }}</p></div></div>';
+        field.innerHTML = innerHTML;
+        field.appendBefore(el);
+        var term_text = '{{ 'checkout.general.terms_text'| t }}';
+        term_text = decodeHTMLEntities(term_text);
+        document.querySelector('.js-modal-toggle').innerHTML = term_text;
+        document.querySelector('#continue_button').disabled = true;
+        var btnHolder = document.querySelector('.step__footer .shown-if-js');
+        btnHolder.classList.add('is-disabled');
+        btnHolder.addEventListener("click", function (e) {
+            if (!document.querySelector('#checkout_terms_and_conditions').checked) {
+                e.preventDefault();
+                document.querySelector('#error-for-checkout_terms_and_conditions').style.display = "block";
+                document.querySelector('#checkout_terms_and_conditions').parentNode.classList.add('field--error');
+            }
+        });
+
+        document.querySelector('#checkout_terms_and_conditions').addEventListener('change', function () {
+            document.querySelector('#error-for-checkout_terms_and_conditions').style.display = "none";
+            document.querySelector('#checkout_terms_and_conditions').parentNode.classList.remove('field--error');
+            if (this.checked) {
+                document.querySelector('#continue_button').disabled = false;
+                btnHolder.classList.remove('is-disabled');
+            } else {
+                document.querySelector('#continue_button').disabled = true;
+                btnHolder.classList.add('is-disabled');
+            }
+        });
+        var modalClose=document.querySelectorAll('.js-modal-close');
+        var modal=document.querySelector('.js-modal');
+        var modalToggle=document.querySelectorAll('.js-modal-toggle a');
+        for (var i = 0, len = modalClose.length; i < len; i++) {
+            modalClose[i].addEventListener("click", function (e) {
+                e.preventDefault();
+                modal.classList.remove('is-open');
+            });
+        }
+        for (var i = 0, len = modalToggle.length; i < len; i++) {
+            modalToggle[i].addEventListener("click", function (e) {
+                e.preventDefault();
+                modal.classList.add('is-open');
+            });
+        }
+
+    }
+
+    el = document.querySelector('#section--billing-address__different div[data-address-field="company"]');
+    if (el != undefined && el != null) {
+        var field = document.createElement("div");
+        field.classList.add('field');
+        var attributes='';
+        for (const [key, value] of Object.entries(window.wetheme.attributes)) {
+            attributes+='<input   type="hidden" name="checkout[attributes]['+key+']" value="'+value+'">';
+        }
+        var innerHTML =
+            '<div class="field__input-wrapper "><label class="field__label field__label--visible" for="checkout_shipping_address_cif">{{ "checkout.general.enter_DNI_CIF"| t }}</label>\n' +
+            '<input id="checkout_shipping_address_cif" placeholder="{{ "checkout.general.enter_DNI_CIF"| t }}"  class="field__input" type="text"  >'
+            '</div>';
+        field.innerHTML += innerHTML;
+        field.appendAfter(el);
+
+        document.querySelector('#checkout_shipping_address_cif').addEventListener('change', function () {
+            var val = document.querySelector('#checkout_shipping_address_cif').value;
+            if(val!=''){
+                if(document.querySelector('.js-field')!= null) {
+                    document.querySelector('.js-field').remove();
+                }
+                field = document.createElement("div");
+                field.classList.add('js-field');
+                field.innerHTML = '<input id="checkout_shipping_address_cif2"  type="hidden" name="checkout[attributes][cif]" value="'+val+'">'+attributes;
+                field.appendAfter(document.querySelector('#checkout_shipping_address_cif'));
+            }else{
+                if(document.querySelector('.js-field')!= null) {
+                    document.querySelector('.js-field').remove();
+                }
+            }
+        });
+    }
+
+});
+$(document).on('page:load page:change', function() {
+    $('.product__description__property').each(function () {
+       if($(this).text().indexOf('iva:')!== -1){
+           $(this).addClass('visually-hidden');
+       }
+    });
+});

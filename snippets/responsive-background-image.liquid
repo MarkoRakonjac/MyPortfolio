@@ -1,0 +1,40 @@
+{% comment %}
+    Use this snippet to add a responsive background image to page.
+
+    Specify Shopify image you want to make responsive in the "with" parameter (see examples below).
+
+    This snippet should be included inside a <style /> tag.
+
+    You have to specify "selector" property that will be used as CSS selector inside the styles.
+
+    Usage:
+    * Define variables inside the include tag (preferred):
+    {% include 'responsive-background-image' with product.image, selector: '.product-bg-image', sizes: '600, 1200, 2000' %}
+
+    * Define variables before including this snippet
+    {% assign selector = '.product-bg-image' %}
+    {% assign sizes = '600, 1200, 2000' %}
+    {% include 'responsive-background-image' %}
+{% endcomment %}
+
+{% if sizes == blank %}
+    {% assign sizes = '300, 600, 900, 1200, 1500, 2000, 4000' %}
+{% endif %}
+
+{% assign sizes_array = sizes | split: ', ' %}
+{% assign last_size = sizes_array.first %}
+
+{% capture url_size %}{{ last_size }}x{% endcapture %}
+{{ selector }} <ls-static-627797>{
+  background-image: url('</ls-static-627797>{% comment ls-rpl %}{{ responsive-background-image | img_url: url_size }}{% endcomment %}{%- capture LS_IMG_URL -%}{%- render "ls-img-url", image: responsive-background-image, img_url: url_size -%}{%- endcapture -%}{{ LS_IMG_URL }}{% comment /ls-rpl %}{% endcomment %}');
+}
+
+{% for size in sizes_array offset: 1 %}
+  {% capture url_size %}{{ size }}x{% endcapture %}
+<ls-static-825139>@media (min-width:</ls-static-825139> {{ last_size | plus: 1 }}<ls-static-341914>px)</ls-static-341914>{% if size != sizes_array.last %} <ls-static-912328>and (max-width:</ls-static-912328> {{ size }}<ls-static-86192>px)</ls-static-86192>{% endif %} {
+  {{ selector }} <ls-static-366913>{
+    background-image: url('</ls-static-366913>{% comment ls-rpl %}{{ responsive-background-image | img_url: url_size }}{% endcomment %}{%- capture LS_IMG_URL -%}{%- render "ls-img-url", image: responsive-background-image, img_url: url_size -%}{%- endcapture -%}{{ LS_IMG_URL }}{% comment /ls-rpl %}{% endcomment %}');
+  }
+}
+  {% assign last_size = size %}
+{% endfor %}

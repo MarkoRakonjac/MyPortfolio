@@ -1,0 +1,359 @@
+<!-- /templates/blog.liquid -->
+{% comment %}
+
+  Loop through a defined number of articles with the 'paginate' tag.
+  Don't forget to close the tag after your loop.
+
+{% endcomment %}
+{% assign limit = 4 %}
+ {% if blog.handle == section.settings.grid_blog %}
+     {% assign limit = 6 %}
+ {% endif %}
+{% paginate blog.articles by limit %}
+
+{% comment %}
+  This template is also used for listing out articles of a specific tag.
+  You can change layouts or styles by checking if current_tags is true.
+{% endcomment %}
+
+<div class="grid blog-main--wrapper">
+
+  <div class="sitewide--title-wrapper">
+    {% if current_tags %}
+      {% if settings.heading_style == 'zigzag' %}<span class="zig-zag-border"></span>{% endif %}
+      <h1 class="page--title">{{ blog.title | link_to: blog.url }} &mdash; {{ current_tags.first }}</h1>
+    {% else %}
+      {% if settings.heading_style == 'zigzag' %}<span class="zig-zag-border"></span>{% endif %}
+      <h1 class="page--title">{{ blog.title }} <a href="{{ shop.url }}{{ blog.url }}.atom"><i class="fa fa-rss" aria-hidden="true"></i></a></h1>
+    {% endif %}
+  </div>
+    <div class="grid__item large--one-whole blog-template--main">
+        {% assign menu = linklists[section.settings.tag_menu] %}
+        {% if blog.handle == section.settings.grid_blog %}
+            {% assign menu = linklists[section.settings.tag_menu2] %}
+        {% endif %}
+        {% if menu.links != blank %}
+            <ul class="tags-nav">
+                {% for link in menu.links %}
+                    <li class="tags-nav__item">
+                        <a class="tags-nav__link"
+                           href="{{ link.url }}"><span>{{ link.title }}</span></a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+    </div>
+    {% if blog.handle == section.settings.grid_blog %}
+        {% assign limitArticles = 3 %}
+        {% assign index = 0 %}
+        <div class="grid__item large--one-whole blog-template--main">
+            <div class="recipes-list">
+                {% for article in blog.articles %}
+                    {% assign index = index | plus:1 %}
+
+                    <div class="recipes-list__item {% if index > limitArticles %} is-hide is-not-visible{% endif %}">
+                        <a href="{{ article.url }}" class="recipes-list__item-link">
+                            {% if article.image %}
+                                <div class="recipes-list__item-img">
+                                    {% include 'responsive-image' with article.image, alt: article.title , crop: 'center' %}
+                                </div>
+                                {% else %}
+                                    <div class="recipes-list__item-img">
+                                    {% include 'responsive-image' with article.image, alt: article.title , crop: 'center' %}
+                                </div>
+                            {% endif %}
+                            <h2 class="recipes-list__item-ttl">
+                                {{ article.title }}
+                            </h2>
+                        </a>
+
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% if paginate.pages > 1 %}
+            {% if paginate.next %}
+                <div class="grid__item large--one-whole blog-template--main">
+                    <div class="pagination">
+                        <div class="">
+                            <a href="{{ paginate.next.url }}" class="js-load-more btn load-more btn-loading">
+                                <span class="btn-loading__loader"></span>
+                                <span class="btn-loading__text">{{ 'blogs.general.load_more' | t }}</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+    {% else %}
+
+
+  <div class="grid__item large--three-quarters blog-template--main">
+
+    {% comment %}
+      Loop through each article in your blog. This is limited to what you set for pagination above.
+
+      For more info on article liquid tags:
+        - http://docs.shopify.com/themes/liquid-variables/article
+    {% endcomment %}
+
+    {% for article in blog.articles %}
+
+      <div class="article--indiv grid">
+
+      	<div class="grid__item large--one-quarter blog-template--individual">
+          <div>
+            {% if section.settings.show_author_name %}
+        		  {{ article.author }}<br />
+            {% endif %}
+        		{% if section.settings.blog_show_date %}
+              <time class="indiv-post-time" datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: format: 'month_day_year' }}</time>
+            {% endif %}
+          </div>
+
+			<ul class="blog-sidebar--meta">
+			{% if blog.comments_enabled? %}
+			<li>
+			<a href="{{ article.url }}#comments">
+			{{ 'blogs.comments.with_count' | t: count: article.comments_count }}
+			</a>
+			</li>
+			{% endif %}
+
+
+			</ul>
+
+		</div>
+
+      	<div class="grid__item large--three-quarters">
+
+	        {% if article.image %}
+          <div class="article__featured-image-wrap">
+	          <a class="article__featured-image{% if settings.ken_burns_enabled %} kb-enabled{% endif %}" href="{{ article.url }}">
+	            {% include 'responsive-image' with article.image, alt: article.title %}
+	          </a>
+          </div>
+	        {% endif %}
+
+   	        <h2><a href="{{ article.url }}">{{ article.title }}</a></h2>
+
+	        {% comment %}
+	          Add a surrounding div with class 'rte' to anything that will come from the rich text editor.
+	          Since this is just a listing page, you can either use the excerpt or truncate the full article.
+	        {% endcomment %}
+	        <div class="rte">
+	            {{ article.excerpt_or_content  | strip_html | truncatewords: 100 }}
+	        </div>
+
+	        <p><a href="{{ article.url }}">{{ 'blogs.article.read_more' | t }} &rarr;</a></p>
+
+		</div>
+
+      </div>
+
+      {% unless forloop.last %}<hr>{% endunless %}
+
+    {% endfor %}
+  </div>
+
+  <div class="grid__item large--one-quarter">
+
+    {% if section.settings.blog-sidebar-image %}
+      {% if section.settings.blog-sidebar-link %}
+        <a href="{{ section.settings.blog-sidebar-link }}" itemprop="url">
+      {% endif %}
+
+      {% capture alt %}{% comment ls-rpl %}{{ section.settings.blog-sidebar-image.alt | default: shop.name }}{% endcomment %}{%- capture LS_ALT -%}{%- render "ls-alt", image: section.settings.blog-sidebar-image -%}{%- endcapture -%}{{ LS_ALT | default: shop.name }}{% comment /ls-rpl %}{% endcomment %}{% endcapture %}
+      {% include 'responsive-image' with section.settings.blog-sidebar-image, alt: article.title, class: 'blog-sidebar-image', alt: alt %}
+
+      {% if section.settings.blog-sidebar-link %}
+        </a>
+      {% endif %}
+    {% endif %}
+
+   	{% if section.settings.show_recent_posts %}
+    <div class="h4">{{ 'blogs.sidebar.recent_articles' | t }}</div>
+    <ul class="no-bullets blog-sidebar--recent-articles">
+      {% for article in blogs[blog.handle].articles limit:6 %}
+        <li>
+          <a href="{{ article.url }}">{{ article.title }}</a>
+          <br>
+          {% if section.settings.blog_show_date %}
+            <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: format: 'month_day_year' }}</time>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if section.settings.show_blog_tags %}
+      <div class="h4">{{ 'blogs.sidebar.categories' | t }}</div>
+      <ul class="no-bullets blog-sidebar--all-categories">
+        {% for tag in blog.all_tags %}
+          {% if current_tags contains tag %}
+          <li>{% comment ls-rpl %}{{ tag }}{% endcomment %}{%- capture LS_TAG -%}{%- render "ls-tag", tag: tag, resource: blog -%}{%- endcapture -%}{{ LS_TAG }}{% comment /ls-rpl %}{% endcomment %}</li>
+          {% else %}
+          <li>{% comment ls-rpl %}{{ tag | link_to_tag: tag }}{% endcomment %}{%- capture LS_TAG -%}{%- render "ls-tag", tag: tag, resource: blog -%}{%- endcapture -%}{{ LS_TAG | link_to_tag: tag }}{% comment /ls-rpl %}{% endcomment %}</li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+
+
+  </div>
+
+    {% endif %}
+  <div class="grid__item large--one-whole">
+      {% if blog.handle != section.settings.grid_blog %}
+          {% if paginate.pages > 1 %}
+              <div class="pagination grid__item large--three-quarters">
+
+                  <ul>
+                      {% if paginate.previous %}
+                          <li class="pagination-arrow"><a href="{{ paginate.previous.url }}"><i
+                                          class="fa fa-chevron-left"></i></a></li>
+                      {% else %}
+                          <li class="prev disabled"><a href="#" onclick="return false;">&laquo;</a></li>
+                      {% endif %}
+
+                      {% for part in paginate.parts %}
+                          {% if part.is_link %}
+                              <li class="pagination-number">{{ part.title | link_to: part.url }}</li>
+                          {% else %}
+                              {% if part.title == '&hellip;' %}
+                                  <li class="ellipsis">{{ part.title }}</li>
+                              {% else %}
+                                  <li class="active pagination-number">{{ part.title | link_to: part.url }}</li>
+                              {% endif %}
+                          {% endif %}
+                      {% endfor %}
+
+                      {% if paginate.next %}
+                          <li class="pagination-arrow"><a href="{{ paginate.next.url }}"><i
+                                          class="fa fa-chevron-right"></i></a></li>
+                      {% else %}
+                          <li class="next disabled"><a href="#" onclick="return false;">&raquo;</a></li>
+                      {% endif %}
+                  </ul>
+
+              </div>
+          {% endif %}
+      {% endif %}
+
+	</div>
+
+</div>
+
+{% endpaginate %}
+
+{% schema %}
+{
+    "name": {
+        "en": "Blog pages",
+        "de": "Blogseiten",
+        "es": "Páginas del blog",
+        "fr": "Pages du blog",
+        "pt-PT": "Páginas de blogs"
+    },
+    "settings": [
+        {
+            "type": "checkbox",
+            "id": "show_author_name",
+            "label": {
+                "en": "Show author name",
+                "de": "Autorennamen anzeigen",
+                "es": "Mostrar el nombre de autor",
+                "fr": "Afficher le nom de l'auteur",
+                "pt-PT": "Mostrar nome do autor"
+            },
+            "default": true
+        },
+        {
+        "type": "link_list",
+        "id": "tag_menu",
+        "label":"Tags menu"
+        },
+        {
+        "type": "link_list",
+        "id": "tag_menu2",
+        "label":"Tags menu for Mosaic blog "
+        },
+        {
+            "type": "header",
+            "content": {
+                "en": "Sidebar",
+                "de": "Seitenleiste",
+                "es": "Barra lateral",
+                "fr": "Barre latérale",
+                "pt-PT": "Barra lateral"
+            }
+        },
+        {
+            "type": "image_picker",
+            "id": "blog-sidebar-image",
+            "label": {
+                "en": "Image",
+                "de": "Bild",
+                "es": "Imagen",
+                "fr": "Image",
+                "pt-PT": "Imagem"
+            }
+        },
+        {
+            "type": "url",
+            "id": "blog-sidebar-link",
+            "label": {
+                "en": "Link",
+                "de": "Link",
+                "es": "Enlace",
+                "fr": "Lien",
+                "pt-PT": "Ligação"
+            }
+        },
+        {
+            "type": "checkbox",
+            "id": "show_blog_tags",
+            "label": {
+                "en": "Show tags",
+                "de": "Tags anzeigen",
+                "es": "Mostrar etiquetas",
+                "fr": "Afficher les étiquettes",
+                "pt-PT": "Mostrar etiquetas"
+            },
+            "default": false
+        },
+        {
+            "type": "checkbox",
+            "id": "show_recent_posts",
+            "label": {
+                "en": "Show 'Recent articles'",
+                "de": "Neueste Artikel' anzeigen",
+                "es": "Mostrar 'Artículos recientes'",
+                "fr": "Afficher 'Articles récents'",
+                "pt-PT": "Mostrar \"artigos recentes\""
+            },
+            "default": true
+        },
+        {
+            "type": "checkbox",
+            "id": "blog_show_date",
+            "label": {
+                "en": "Show dates",
+                "de": "Daten anzeigen",
+                "es": "Mostrar fechas",
+                "fr": "Afficher les dates",
+                "pt-PT": "Mostrar datas"
+            },
+            "default": true
+        },
+
+        {
+        "type": "blog",
+        "id": "grid_blog",
+        "label": "Mosaic blog"
+        }
+    ]
+}
+{% endschema %}

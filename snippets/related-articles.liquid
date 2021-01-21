@@ -1,0 +1,27 @@
+{% if section.settings.enable_related_articles %}
+    {% for tag in product.tags %}
+        {% if tag contains 'related-article' %}
+            {% comment ls-rpl %}{% assign article_handle = tag | split: ':' | last %}{% endcomment %}{%- capture LS_TAG -%}{%- render "ls-tag", tag: tag, resource: product -%}{%- endcapture -%}{% assign article_handle = LS_TAG | split: ':' | last %}{% comment /ls-rpl %}{% endcomment %}
+        {% endif %}
+    {% endfor %}
+    {% if article_handle != blank %}
+        <div class=" related-products related-articles">
+            {% if section.settings.related_product_title!= blank %}
+                <h2 class="text-center">{{ section.settings.related_articles_title }}</h2>
+            {% endif %}
+            <div class="js-product-articles js-sort-by-date">
+                {% for tag in product.tags %}
+                    {% if tag contains 'related-article' %}
+                        {% comment ls-rpl %}{% assign article_handle = tag | split: ':' | last %}{% endcomment %}{%- capture LS_TAG -%}{%- render "ls-tag", tag: tag, resource: product -%}{%- endcapture -%}{% assign article_handle = LS_TAG | split: ':' | last %}{% comment /ls-rpl %}{% endcomment %}
+                        {% assign article = articles[article_handle] %}
+                        <div class="grid__item js-sort-by-date-item"  data-date="{{ article.published_at | date: "%Y-%m-%dT%H:%M:%SZ"}}">
+                            <div class="grid-view-item">
+                               {% include "article-item" , crop:'center' %}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+{% endif %}

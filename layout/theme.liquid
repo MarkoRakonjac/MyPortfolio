@@ -1,0 +1,336 @@
+{%- capture LS_INPUT -%}<!doctype html>
+<!--[if IE 8]>{% comment ls-rpl %}<html class="no-js lt-ie9" lang="en">{% endcomment %}<html class="no-js lt-ie9" lang="{%- render "ls-language" -%}" dir="{%- render "ls-language-direction" -%}">{% comment /ls-rpl %}{% endcomment %} <![endif]-->
+<!--[if IE 9 ]>{% comment ls-rpl %}<html class="ie9 no-js">{% endcomment %}<html class="ie9 no-js" lang="{%- render "ls-language" -%}" dir="{%- render "ls-language-direction" -%}">{% comment /ls-rpl %}{% endcomment %} <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> {% comment ls-rpl %}<html class="no-js">{% endcomment %}<html class="no-js" lang="{%- render "ls-language" -%}" dir="{%- render "ls-language-direction" -%}">{% comment /ls-rpl %}{% endcomment %} <!--<![endif]-->
+<head>
+{%- render "ls-head" -%}
+    {% if template == 'index' or template.name == 'collection' or template.name == 'product'%}
+      <!-- Google Tag Manager -->
+      <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+              j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+              'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+          })(window,document,'script','dataLayer','GTM-MR4QGKT');</script>
+      <!-- End Google Tag Manager -->
+      <!-- Hotjar Tracking Code for www.laumont.shop -->
+      <script>
+          (function(h,o,t,j,a,r){
+              h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+              h._hjSettings={hjid:692716,hjsv:6};
+              a=o.getElementsByTagName('head')[0];
+              r=o.createElement('script');r.async=1;
+              r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+              a.appendChild(r);
+          })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+      </script>
+  {% endif %}
+  <!-- Basic page needs ================================================== -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  {% if settings.favicon != blank %}
+  	  <link rel="shortcut icon" href="{% comment ls-rpl %}{{ settings.favicon | img_url: '180x180', crop: 'center' }}{% endcomment %}{%- capture LS_IMG_URL -%}{%- render "ls-img-url", image: settings.favicon, img_url: '180x180', crop: 'center' -%}{%- endcapture -%}{{ LS_IMG_URL }}{% comment /ls-rpl %}{% endcomment %}" type="image/png">
+      <link rel="apple-touch-icon" sizes="180x180" href="{% comment ls-rpl %}{{ settings.favicon | img_url: '180x180', crop: 'center'  }}{% endcomment %}{%- capture LS_IMG_URL -%}{%- render "ls-img-url", image: settings.favicon, img_url: '180x180', crop: 'center' -%}{%- endcapture -%}{{ LS_IMG_URL  }}{% comment /ls-rpl %}{% endcomment %}">
+      <link rel="apple-touch-icon-precomposed" sizes="180x180" href="{% comment ls-rpl %}{{ settings.favicon | img_url: '180x180', crop: 'center'  }}{% endcomment %}{%- capture LS_IMG_URL -%}{%- render "ls-img-url", image: settings.favicon, img_url: '180x180', crop: 'center' -%}{%- endcapture -%}{{ LS_IMG_URL  }}{% comment /ls-rpl %}{% endcomment %}">
+      <link rel="icon" type="image/png" sizes="32x32" href="{% comment ls-rpl %}{{ settings.favicon | img_url: '32x32', crop: 'center'  }}{% endcomment %}{%- capture LS_IMG_URL -%}{%- render "ls-img-url", image: settings.favicon, img_url: '32x32', crop: 'center' -%}{%- endcapture -%}{{ LS_IMG_URL  }}{% comment /ls-rpl %}{% endcomment %}">
+      <link rel="icon" type="image/png" sizes="194x194" href="{% comment ls-rpl %}{{ settings.favicon | img_url: '194x194', crop: 'center'  }}{% endcomment %}{%- capture LS_IMG_URL -%}{%- render "ls-img-url", image: settings.favicon, img_url: '194x194', crop: 'center' -%}{%- endcapture -%}{{ LS_IMG_URL  }}{% comment /ls-rpl %}{% endcomment %}">
+      <link rel="icon" type="image/png" sizes="192x192" href="{% comment ls-rpl %}{{ settings.favicon | img_url: '192x192', crop: 'center'  }}{% endcomment %}{%- capture LS_IMG_URL -%}{%- render "ls-img-url", image: settings.favicon, img_url: '192x192', crop: 'center' -%}{%- endcapture -%}{{ LS_IMG_URL  }}{% comment /ls-rpl %}{% endcomment %}">
+      <link rel="icon" type="image/png" sizes="16x16" href="{% comment ls-rpl %}{{ settings.favicon | img_url: '16x16', crop: 'center'  }}{% endcomment %}{%- capture LS_IMG_URL -%}{%- render "ls-img-url", image: settings.favicon, img_url: '16x16', crop: 'center' -%}{%- endcapture -%}{{ LS_IMG_URL  }}{% comment /ls-rpl %}{% endcomment %}">
+  {% endif %}
+
+  <!-- Title and description ================================================== -->
+  <title>
+  {{ page_title }}{% if current_tags %}{% comment ls-rpl %}{% assign meta_tags = current_tags | join: ', ' %}{% endcomment %}{%- capture LS_TAGS -%}{%- render "ls-tags", resource: nil, tags: current_tags -%}{%- endcapture -%}{%- assign LS_TAGS = LS_TAGS | split: "," -%}{% assign meta_tags = LS_TAGS | join: ', ' %}{% comment /ls-rpl %}{% endcomment %} &ndash; {{ 'general.meta.tags' | t: tags: meta_tags }}{% endif %}{% if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif %}{% unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless %}
+  </title>
+
+  {% if page_description %}
+  <meta name="description" content="{{ page_description | escape }}">
+  {% endif %}
+
+  <!-- Helpers ================================================== -->
+  {% include 'social-meta-tags' %}
+  <link rel="canonical" href="{{ canonical_url }}"/>
+  {% if template contains 'product' %}
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+  {% else %}
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  {% endif %}
+  <meta name="theme-color" content="{{ settings.color_primary }}">
+
+  <!-- CSS ================================================== -->
+  {{ 'plugins.css' | asset_url | stylesheet_tag }}
+  {{ 'timber.scss.css' | asset_url | stylesheet_tag }}
+
+  {% include 'font-links' %}
+
+  <!-- Header hook for plugins ================================================== -->
+  {{ content_for_header }}
+  {% include 'oldIE-js' %}
+
+    {% assign cur_loc = ''%}
+    {% for locale in shop.published_locales %}
+        {% if locale.primary %}
+            {% assign cur_loc= locale.iso_code %}
+        {% endif %}
+    {% endfor %}
+  <script>
+    window.wetheme = {
+      name: 'Flow',
+       taxes_included: {{ shop.taxes_included }},
+        moneyFormat: {{ shop.money_format | json }},
+        geoip:{{ settings.geoip | json}},
+        es: {{ settings.lang1_url | json}},
+        fr: {{ settings.lang2_url | json}},
+        en: {{ settings.lang3_url | json}},
+        geoip_enabled: {{ settings.geoip_enabled | json }},
+        es_cur: {{ settings.lang1_cur | json}},
+        fr_cur: {{ settings.lang2_cur | json}},
+        en_cur: {{ settings.lang3_cur | json}}
+    };
+  </script>
+  {{ 'jquery-3.3.1.min.js' | asset_url | script_tag }}
+  {{ 'modernizr.min.js' | asset_url | script_tag }}
+  
+  <!-- Order Deadline App: Manual Placement -->
+  <script defer="defer" src="https://shopify.orderdeadline.com/app/frontend/js/order-deadline.min.js?shop=laumont-b2c.myshopify.com"></script>
+
+  {% comment %}
+    If you store has customer accounts disabled, you can remove the following JS file
+  {% endcomment %}
+  {% if template contains 'customers' %}
+    {{ 'shopify_common.js' | shopify_asset_url | script_tag }}
+  {% endif %}
+  <script>
+
+      function setCookie(cname, cvalue, exdays) {
+          var d = new Date();
+          d.setTime(d.getTime() + (exdays*24*60*60*1000));
+          var expires = "expires="+ d.toUTCString();
+          document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+      }
+
+      function getCookie(cname) {
+          var name = cname + "=";
+          var decodedCookie = decodeURIComponent(document.cookie);
+          var ca = decodedCookie.split(';');
+          for(var i = 0; i <ca.length; i++) {
+              var c = ca[i];
+              while (c.charAt(0) == ' ') {
+                  c = c.substring(1);
+              }
+              if (c.indexOf(name) == 0) {
+                  return c.substring(name.length, c.length);
+              }
+          }
+          return "";
+      }
+
+      url = window.location.href;
+      if ( url.indexOf("customapp=") != -1 ) {
+          setCookie("is_app", 1, 365);
+      }
+
+      if ( getCookie("is_app") ) {
+          var head  = document.getElementsByTagName('head')[0];
+          var style  = document.createElement('style');
+          style.type = 'text/css';
+          style.innerHTML = '.site-footer,.newsletter--section,.notification-bar {display: none; }.app-nav__holder{display: block;}'; /*Ejemplo de código CSS para ocultar los elementos deseados*/
+          head.appendChild(style);
+      }
+  </script>
+
+<link rel=“alternate” hreflang=“es” href=“http://www.laumont.shop” />
+<link rel=“alternate” hreflang=“ca” href=“http://www.laumont.shop/ca” />
+<link rel=“alternate” hreflang=“en” href=“http://www.laumont.shop/en” />
+<link rel=“alternate” hreflang=“fr” href=“http://www.laumont.shop/fr” />
+<link rel=“alternate” hreflang=“it” href=“http://www.laumont.shop/it” />
+</head>
+
+{% comment %}
+  Add the page template as a class for easy page or template specific styling.
+{% endcomment %}
+<body id="{{ page_title | handle }}" class="{% if template == 'page.contact' %}contact-page {% endif %}{% if customer %}customer-logged-in {% endif %}template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }}{% unless settings.animations_enabled %} animations-disabled{% endunless %}{% if settings.page_fade_enabled %} page-fade{% endif %}{% if settings.color_body_bg == settings.header-bg-color %} white--match{% endif %}" >
+{% if template == 'index' or template.name == 'collection' or template.name == 'product'%}
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MR4QGKT"
+                    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+{% endif %}
+{% comment %}
+  Cart Drawer might be also used by 'Quick View' and 'LogIn'
+  {% endcomment %}
+  <div id="CartDrawer" class="drawer drawer--right drawer--cart">
+    <div class="drawer__header sitewide--title-wrapper{% if settings.heading_style == 'dotted-line' %} header-style--ignore{% endif %}">
+      <div class="drawer__close js-drawer-close">
+        <button type="button" class="icon-fallback-text">
+          <span class="fallback-text">{{ 'cart.general.close_cart' | t | json }}</span>
+        </button>
+      </div>
+      <div class="drawer__title h2 page--title " id="CartTitle">{{ 'cart.general.title' | t }}</div>
+      <div class="drawer__title h2 page--title hide" id="ShopNowTitle">{{ 'products.product.quick_shop' | t }}</div>
+      <div class="drawer__title h2 page--title hide" id="LogInTitle">{{ 'customer.login.title' | t }}</div>
+      <div class="drawer__title h2 page--title hide" id="SearchTitle">{{ 'general.search.title' | t }}</div>
+    </div>
+    <div id="CartContainer"></div>
+    <div id="ShopNowContainer" class="hide"></div>
+    <div id="SearchContainer" class="hide">
+      <div class="wrapper search-drawer">
+        <div class="input-group">
+          <input type="search" name="q" id="search-input" placeholder="{{ 'general.search.placeholder' | t }}" class="input-group-field" aria-label="{{ 'general.search.placeholder' | t }}" autocomplete="off" />
+          <span class="input-group-btn">
+            <button type="submit" class="btn icon-fallback-text">
+              <i class="fa fa-search"></i>
+              <span class="fallback-text"><ls-static-502067>Search</ls-static-502067></span>
+            </button>
+          </span>
+        </div>
+        {% include 'live-search-result' %}
+        <script type="text/javascript">
+            var SearchTranslations = {
+                no_results_html: {{ 'general.search.no_results_html' | t | json }},
+                results_for_html: {{ 'general.search.results_for_html' | t | json }},
+                products: {{ 'general.search.products' | t | json }},
+                pages: {{ 'general.search.pages' | t | json }},
+                articles: {{ 'general.search.articles' | t | json }}
+            };
+        </script>
+        <div id="search-results" class="grid-uniform">
+          <!-- here will be the search results -->
+        </div>
+        <a id="search-show-more" href="#" class="btn hide">{{ 'collections.general.see_more' | t }}</a>
+      </div>
+    </div>
+    <div id="LogInContainer" class="hide"></div>
+  </div>
+  <div id="DrawerOverlay"></div>
+
+<div id="PageContainer">
+
+	{% section 'announcement-bar' %}
+
+	{% section 'header' %}
+
+		{% if template == 'index' %}
+
+			<div class="flow-homepage">
+
+		{% else %}
+
+			{% unless template == 'collection' or template contains 'contact' or template == 'list-collections' %}<div class="wrapper main-content">{% endunless %}
+
+		{% endif %}
+
+		{{ content_for_layout }}
+
+		</div>
+
+    {% section 'footer-newsletter' %}
+
+              <footer class="site-footer{% if template contains 'product' %}{% if settings.related_products_enable %}{% else %} product-sticker-stop{% endif %}{% endif %} footer-alignment--center">
+                <div class="wrapper">
+                    {% section 'footer' %}
+                    {% section 'footer-bottom' %}
+                </div>
+              </footer>
+                {% section 'app-menu' %}
+</div>
+
+<script type="text/javascript">
+window.lazySizesConfig = window.lazySizesConfig || {};
+window.lazySizesConfig.rias = window.lazySizesConfig.rias || {};
+
+// configure available widths to replace with the {width} placeholder
+window.lazySizesConfig.rias.widths = [150, 300, 600, 900, 1200, 1500, 1800, 2100];
+
+document.addEventListener('lazyriasmodifyoptions', function (e) {
+    // convert width to width specification for shopify
+    var widthmap = {}
+    var aspect = parseFloat(e.target.dataset.aspectratio); // classList.contains('lazyload-square');
+    var forceHeight = parseInt(e.target.dataset.forceHeight, 10);
+    window.lazySizesConfig.rias.widths.forEach(function (width) {
+        if (forceHeight) {
+            var heightForWidth = width / aspect;
+            var newWidth, newHeight;
+            if (heightForWidth < forceHeight) {
+              newWidth = forceHeight / heightForWidth * width;
+            } else {
+              newWidth = width;
+            }
+            newHeight = newWidth / aspect;
+            widthmap[width] = newWidth.toFixed(0) + 'x' + newHeight.toFixed(0)
+        } else {
+            widthmap[width] = width.toString() + 'x';
+        }
+    });
+    e.detail.widthmap = widthmap;
+});
+</script>
+
+  {{ 'fastclick.min.js' | asset_url | script_tag }}
+  {{ 'plugins.js' | asset_url | script_tag }}
+  {{ 'timber.js' | asset_url | script_tag }}
+
+  <script>
+    window.default_currency_format = {{ shop.money_format | json }};
+    {% if template == 'product' %}
+      document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+    {% endif %}
+  </script>
+
+  {{ 'custom.js' | asset_url | script_tag }}
+
+  {% include 'popup' %}
+
+  {% comment %}
+    Template-specific js
+  {% endcomment %}
+  <script>
+    {% if resetPassword %}
+      window.wetheme.$(function() {
+        timber.resetPasswordSuccess();
+      });
+    {% endif %}
+  </script>
+
+  {% comment %}
+    Ajaxify your cart with this plugin.
+    Documentation:
+      - http://shopify.com/timber#ajax-cart
+  {% endcomment %}
+  {{ 'handlebars.min.js' | asset_url | script_tag }}
+  {% include 'ajax-cart-template' %}
+  {{ 'ajax-cart.js' | asset_url | script_tag }}
+    <script>
+      function init() {
+        ajaxCart.init({
+          formSelector: '#AddToCartForm',
+          cartContainer: '#CartContainer',
+          addToCartSelector: '#AddToCart',
+          cartCountSelector: '#CartCount',
+          moneyFormat: {{ shop.money_format | json }},
+        });
+      }
+      window.wetheme.$(init);
+      document.addEventListener('shopify:section:load', init);
+
+      {% if settings.ajax_cart_method == "drawer" %}
+        window.wetheme.$(document.body).on('afterCartLoad.ajaxCart', function(evt, cart) {
+          // Bind to 'afterCartLoad.ajaxCart' to run any javascript after the cart has loaded in the DOM
+          timber.RightDrawer.open(cart.settings);
+        });
+      {% elsif settings.ajax_cart_method == "added" %}
+        window.wetheme.$(document.body).on('beforeAddItem.ajaxCart', function(evt, cart) {
+          // Change the button text temporarily.
+          // console.log(evt)
+          timber.addToCartAdding();
+        });
+        window.wetheme.$(document.body).on('completeAddItem.ajaxCart', function(evt, cart) {
+          // Change the button text back to default.
+          timber.addToCartAdded();
+        });
+      {% endif %}
+    </script>
+<script src=“https://apps.omegatheme.com/estimated-shipping/client/estimated-shipping.js?v=1598254749&shop=laumont-b2c.myshopify.com”></script>
+</body>
+</html>
+{%- endcapture -%}{%- render "ls-output", input: LS_INPUT -%}

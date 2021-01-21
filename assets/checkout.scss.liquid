@@ -1,0 +1,101 @@
+.c-modal {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: content-box;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s ease-in-out;
+    &.is-open{
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+.c-modal__content {
+    background: #fff;
+    width: 800px;
+    max-height: 90vh;
+    overflow: auto;
+    position: relative;
+    z-index: 2;
+    padding: 60px;
+    max-width:90%;
+}
+
+.c-modal__overlay {
+    background: rgba(#000, 0.6);
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
+}
+.c-modal__close {
+    right: 15px;
+    top: 15px;
+    width: 35px;
+    height: 35px;
+    background-color: #fff;
+    background-image: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+    position: absolute;
+    &:before, &:after {
+        transition: transform 0.5s ease-in-out;
+        position: absolute;
+        content: '';
+        height: 26px;
+        width: 2px;
+        background-color: currentColor;
+    }
+    &:before {
+        transform: rotate(45deg);
+    }
+    &:after {
+        transform: rotate(-45deg);
+    }
+    &:hover, &:focus {
+        &:before {
+            transform: rotate(135deg);
+        }
+        &:after {
+            transform: rotate(-135deg);
+        }
+    }
+}
+
+.step__footer .shown-if-js.is-disabled{
+    position: relative;
+    cursor: pointer;
+    &:hover .btn{
+        background-color: #64593b;
+    }
+}
+.step__footer .shown-if-js.is-disabled:before{
+    content: '';
+    position: absolute;
+    left:0;
+    top:0;
+    right:0;
+    bottom:0;
+    z-index: 1;
+}
+.field--error .input-checkbox {
+    border-color: #e32c2b;
+    -webkit-box-shadow: 0 0 0 1px #e32c2b;
+    box-shadow: 0 0 0 1px #e32c2b;
+}
+
+.product span.product__description__property.order-summary__small-text {
+    display: none;
+}

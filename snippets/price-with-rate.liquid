@@ -1,0 +1,9 @@
+{% if iva == blank or  shop.taxes_included %}
+    {{ price | money }}
+{% else %}
+    {% assign iva = iva | replace : "%", "" %}
+    {% assign iva_new = 100 | plus : iva %}
+    {% assign price_new = price | times: iva_new | times: 1.0 | divided_by: 100 | round: 2 %}
+    <span data-test="{{ iva }}-{{ iva_new }}-{{ price_new }}" class="price-with-iva">{{ price_new | money }}</span>
+    <span class="price-without-iva">{{ price | money }}</span>
+{% endif %}

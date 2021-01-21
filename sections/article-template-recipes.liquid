@@ -1,0 +1,470 @@
+<!-- /templates/article.liquid -->
+{% comment %}
+
+    Comments will not appear right after they are submitted, either to be checked for spam
+    or to await moderation. When a comment is submitted, the browser is redirected to a page
+    that includes the new comment id in its URL.
+    Example: http://shopname.myshopify.com/blogs/news/2022072-my-post?comment=3721372
+
+    More information:
+    - http://docs.shopify.com/themes/liquid-variables/comment
+
+{% endcomment %}
+
+{% assign number_of_comments = article.comments_count %}
+
+{% comment %}
+    If a comment was just submitted and it has no blank fields, we have an extra comment to count.
+{% endcomment %}
+{% if comment and comment.created_at %}
+    {% assign number_of_comments = article.comments_count | plus: 1 %}
+{% endif %}
+<div class=" wrapper wrapper--sm">
+
+    <div class="sitewide--title-wrapper sitewide--title-wrapper--fit">
+        {% if settings.heading_style == 'zigzag' %}<span class="zig-zag-border"></span>{% endif %}
+        <h1 class="page--title "><span>{{ article.title }}</span></h1>
+    </div>
+    {% if section.settings.blog_show_date %}
+        <time class="post-time indiv-post-time"
+              datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: format: 'month_day_year' }}</time>
+    {% endif %}
+
+    <div class=" blog-main--wrapper">
+
+        <article class="" itemscope itemtype="http://schema.org/Article">
+
+            <div class="" itemprop="articleBody">
+
+
+                {% assign article_video = article.metafields.recipe.video %}
+                {% if article_video %}
+                    <div class="article--image-wrapper">
+                        <div class="responsive-embed">
+                            {% unless article_video contains  "enablejsapi" %}
+                                {% if article_video contains  "?" %}
+                                    {% assign article_video = article_video | append: "&enablejsapi=1" %}
+                                {% else %}
+                                    {% assign article_video = article_video | append: "?enablejsapi=1" %}
+                                {% endif %}
+                            {% endunless %}
+                            {% assign videoId = article_video | split : "embed/" %}
+                            {% assign videoId = videoId.last | split : "?" %}
+                            {% assign videoId = videoId.first %}
+                            <div class="video-wrapper">
+                                <div id="player"></div>
+                            </div>
+                            <script>
+                                var tag = document.createElement('script');
+
+                                tag.src = "https://www.youtube.com/iframe_api";
+                                var firstScriptTag = document.getElementsByTagName('script')[0];
+                                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+                                var player;
+
+                                function onYouTubeIframeAPIReady() {
+                                    player = new YT.Player('player', {
+                                        videoId: '{{ videoId }}',
+                                        events: {
+                                            'onReady': onPlayerReady
+                                        },
+                                        playerVars: {
+                                            rel: 0,
+                                            modestbranding:   1
+                                        }
+                                    });
+                                }
+
+                                function onPlayerReady(event) {
+                                    event.target.playVideo();
+                                }
+
+                            </script>
+                        </div>
+                    </div>
+                {% else %}
+                    {% if article.image %}
+                        <div class="article--image-wrapper">
+                            {% include 'responsive-image' with article.image, img_tag: article.title %}
+                        </div>
+                    {% endif %}
+                {% endif %}
+
+                <div class="grid grid--flex grid--article">
+
+                    {% assign article_ing = article.metafields.recipe.ingredients %}
+                    {% assign article_people = article.metafields.recipe.people %}
+                    {% assign article_difficulty = article.metafields.recipe.difficulty %}
+                    {% if article_ing  or article_difficulty or article_people %}
+                        <div class="grid__item large--one-half grid__item--ing product__ing">
+                            <div class=" product-details-wrapper  {% if article.metafields.recipe.logo != blank %}product__ing-holder{% endif %}">
+
+                                {% if article.metafields.recipe.logo != blank %}
+                                    <div class="product__ing-img-holder">
+                                        <img src="{{ article.metafields.recipe.logo }}" alt=""
+                                             class="product__ing-img">
+                                    </div>
+                                {% endif %}
+
+                                <div class="product__ing-text">
+                                    {% if article_people %}
+                                        <p><strong>{{ 'blogs.article.people' | t }}:</strong> {{ article_people }}</p>
+                                    {% endif %}
+                                    {% if article_difficulty %}
+                                        <p><strong>{{ 'blogs.article.difficulty' | t }}
+                                                :</strong> {{ article_difficulty }}
+                                        </p>
+                                    {% endif %}
+                                    {% if article_ing %}
+                                        <p><strong>{{ 'blogs.article.ingridients' | t }}:</strong></p>
+                                        {{ article_ing }}
+                                    {% endif %}
+                                </div>
+
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="grid__item large--one-half product__ing">
+                        <div class="rte  product-details-wrapper ">
+                            {% assign content = article.content| replace: '<ul>',"<ol>"| replace: '</ul>',"</ol>" %}
+
+                            <h2>{{ 'blogs.article.recipe'| t }}</h2>
+                            <div class="steps__holder">
+                                <div class=" steps">
+                                    {% if article.content contains "<img" %}
+                                        {% assign content-src = article.content | replace: '<img','[img]<img' %}
+                                        {% assign content-src = content-src | split: '[img]' %}
+                                        {% assign contentarticle ='' %}
+                                        {% for cont in content-src %}
+                                            {% if cont contains "<img" %}
+                                                {% assign src = cont | replace_first: ">", "[/img]" | split: '[/img]' | last %}
+                                                {% assign contentarticle =contentarticle | append : src %}
+                                            {% else %}
+                                                {% assign contentarticle =contentarticle | append : cont %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% assign contentarticle =contentarticle | replace : '<p></p>',''| replace : '<li></li>','' %}
+                                        {{ contentarticle }}
+                                    {% else %}
+                                        {{ content }}
+                                    {% endif %}
+                                    {% if article.content contains "<img" %}
+                                        <div class="owl-carousel js-article-content-slider steps__slider">
+                                            {% assign content-src = article.content | split: 'src="' %}
+                                            {% assign content-size = content-src.size | minus:1 %}
+                                            {% for i in (1..content-size) %}
+                                                {% assign src = content-src[i] | split: '"' | first %}
+                                                <div class="steps__slider-item">
+                                                    <img src="{{ src }}" alt=""/>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                    {% endif %}
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% for tag in article.tags %}
+                    {% if tag contains 'related' %}
+                        {% comment ls-rpl %}{% assign product_handle = tag | split: ':' | last %}{% endcomment %}{%- capture LS_TAG -%}{%- render "ls-tag", tag: tag, resource: article -%}{%- endcapture -%}{% assign product_handle = LS_TAG | split: ':' | last %}{% comment /ls-rpl %}{% endcomment %}
+                    {% endif %}
+                {% endfor %}
+                {% if product_handle != blank %}
+                    <div class="products--match-height">
+                        <div class="related-products products-slider ">
+                            <h2>{{ 'blogs.article.related_title' | t }}</h2>
+                            <div class="js-product-related grid">
+                                {% for tag in article.tags %}
+                                    {% if tag contains 'related' %}
+                                        {% assign product_handle = tag | split: ':' | last %}
+                                        {% for product in collections['all'].products %}
+                                            {% if product.handle == product_handle %}
+                                                <div class=" grid__item">
+                                                    <div class="grid-view-item">
+                                                        {% include 'grid-view-item' %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+            </div>
+
+            {% if settings.social_sharing_blog %}
+                {% include 'social-share' %}
+            {% endif %}
+
+            {% comment %}
+                Create links to the next and previous articles, if available.
+            {% endcomment %}
+            {% if blog.next_article or blog.previous_article %}
+                <hr>
+                <p class="clearfix">
+                    {% if blog.previous_article %}
+                        <span class="left">
+            &larr; {{ 'blogs.article.older_post' | t | link_to: blog.previous_article }}
+          </span>
+                    {% endif %}
+                    {% if blog.next_article %}
+                        <span class="right">
+            {{ 'blogs.article.newer_post' | t | link_to: blog.next_article }} &rarr;
+          </span>
+                    {% endif %}
+                </p>
+            {% endif %}
+
+            {% if blog.comments_enabled? %}
+                {% if number_of_comments > 0 %}
+                    <hr>
+
+                    <div class="h3">{{ 'blogs.comments.with_count' | t: count: number_of_comments }}</div>
+                {% endif %}
+
+                {% comment %}
+                    Just like blog.liquid page, define how many comments should be on each page.
+                {% endcomment %}
+                {% paginate article.comments by 5 %}
+                    {% comment %}
+                        #comments is required, it is used as an anchor link by Shopify.
+                    {% endcomment %}
+                    <div id="comments">
+
+                        {% if comment and comment.created_at %}
+                            <p class="note form-success">
+                                {% if blog.moderated? %}
+                                    {{ 'blogs.comments.success_moderated' | t }}
+                                {% else %}
+                                    {{ 'blogs.comments.success' | t }}
+                                {% endif %}
+                            </p>
+                        {% endif %}
+
+                        {% if number_of_comments > 0 %}
+                            <ul class="no-bullets">
+                                {% comment %}
+                                    If a comment was just submitted with no blank field, show it.
+                                {% endcomment %}
+                                {% if comment and comment.created_at %}
+                                    <li id="{{ comment.id }}"
+                                        class="comment comment-wrapper first{% if article.comments_count == 0 %} last{% endif %}">
+                                        <div class="comment">
+                                            <div class="rte">
+                                                {{ comment.content }}
+                                            </div>
+
+                                            <span class="comment-data">
+                      {% capture author %}{{ comment.author }}{% endcapture %}
+                                                {% if section.settings.blog_show_date %}
+                                                    {% capture date %}
+                                                        <time
+                                                        datetime="{{ comment.created_at | date: '%Y-%m-%d' }}">{{ comment.created_at | date: format: 'month_day_year' }}</time>{% endcapture %}
+                                                {% endif %}
+                                                {{ 'blogs.article.comment_meta_html' | t: author: author, date: date }}
+                    </span>
+                                        </div>
+                                    </li>
+                                {% endif %}
+
+                                {% comment %}
+                                    Showing the rest of the comments.
+                                {% endcomment %}
+                                {% for comment in article.comments %}
+                                    <li id="{{ comment.id }}"
+                                        class="comment comment-wrapper {% unless number_of_comments > article.comments_count %}{% if forloop.first %} first{% endif %}{% endunless %}{% if forloop.last %} last {% endif %}">
+                                        <div class="comment">
+                                            <div class="rte">
+                                                {{ comment.content }}
+                                            </div>
+
+                                            <span class="comment-data">
+                      {% capture author %}{{ comment.author }}{% endcapture %}
+                                                {% if section.settings.blog_show_date %}
+                                                    {% capture date %}
+                                                        <time
+                                                        datetime="{{ comment.created_at | date: '%Y-%m-%d' }}">{{ comment.created_at | date: format: 'month_day_year' }}</time>{% endcapture %}
+                                                {% endif %}
+                                                {{ 'blogs.article.comment_meta_html' | t: author: author, date: date }}
+                    </span>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+
+                            {% if paginate.pages > 1 %}
+                                <div class="pagination">
+
+                                    <ul>
+                                        {% if paginate.previous %}
+                                            <li class="pagination-arrow"><a href="{{ paginate.previous.url }}"><i
+                                                            class="fa fa-chevron-left"></i></a></li>
+                                        {% else %}
+                                            <li class="prev disabled"><a href="#" onclick="return false;">&laquo;</a>
+                                            </li>
+                                        {% endif %}
+
+                                        {% for part in paginate.parts %}
+                                            {% if part.is_link %}
+                                                <li class="pagination-number">{{ part.title | link_to: part.url }}</li>
+                                            {% else %}
+                                                {% if part.title == '&hellip;' %}
+                                                    <li class="ellipsis">{{ part.title }}</li>
+                                                {% else %}
+                                                    <li class="active pagination-number">{{ part.title | link_to: part.url }}</li>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
+
+                                        {% if paginate.next %}
+                                            <li class="pagination-arrow"><a href="{{ paginate.next.url }}"><i
+                                                            class="fa fa-chevron-right"></i></a></li>
+                                        {% else %}
+                                            <li class="next disabled"><a href="#" onclick="return false;">&raquo;</a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+
+                                </div>
+                            {% endif %}
+
+
+                            <hr>
+
+                        {% endif %}
+
+                        <div class="form-vertical">
+                            {% form 'new_comment', article %}
+                                <div class="h3">{{ 'blogs.comments.title' | t }}</div>
+
+                                {{ form.errors | default_errors }}
+
+                                <div class="grid">
+
+                                    <div class="grid__item large--one-half">
+                                        <label for="CommentAuthor"
+                                               class="hidden-label">{{ 'blogs.comments.name' | t }}</label>
+                                        <input type="text" name="comment[author]" id="CommentAuthor"
+                                               class="input-full{% if form.errors contains 'author' %} error{% endif %}"
+                                               placeholder="{{ 'blogs.comments.name' | t }}" value="{{ form.author }}"
+                                               autocapitalize="words">
+
+                                        <label for="CommentEmail"
+                                               class="hidden-label">{{ 'blogs.comments.email' | t }}</label>
+                                        <input type="email" name="comment[email]" id="CommentEmail"
+                                               class="input-full{% if form.errors contains 'email' %} error{% endif %}"
+                                               placeholder="{{ 'blogs.comments.email' | t }}" value="{{ form.email }}"
+                                               autocorrect="off" autocapitalize="off">
+                                    </div>
+
+                                    <div class="grid__item large--one-half">
+                                        <label for="CommentBody"
+                                               class="hidden-label">{{ 'blogs.comments.message' | t }}</label>
+                                        <textarea name="comment[body]" id="CommentBody"
+                                                  class="input-full{% if form.errors contains 'body' %} error{% endif %}"
+                                                  placeholder="{{ 'blogs.comments.message' | t }}">{{ form.body }}</textarea>
+                                    </div>
+
+                                </div>
+                            <div class="grid">
+
+                                <div class="grid__item large--one-half">
+                                    {% assign min = 1 %}
+                                    {% assign max = 5 %}
+                                    {% assign diff = max | minus: min %}
+                                    {% assign randomNumber = "now" | date: "%N" | modulo: diff | plus: min %}
+                                    {% assign min = 5 %}
+                                    {% assign max = 10 %}
+                                    {% assign diff = max | minus: min %}
+                                    {% assign randomNumber2 = "now" | date: "%N" | modulo: diff | plus: min %}
+                                    <span>
+                                        {{ randomNumber }}+{{ randomNumber2 }} =
+                                    </span>
+                                    <input type="text" class="js-spam-field input-full" data-first="{{ randomNumber }}" data-second="{{ randomNumber2 }}"
+                                           value="">
+                                </div>
+                            </div>
+                                {% if blog.moderated? %}
+                                    <p>{{ 'blogs.comments.moderated' | t }}</p>
+                                {% endif %}
+
+                                <input type="submit" disabled="disabled" class="btn article-comment--btn  js-spam-btn"
+                                       value="{{ 'blogs.comments.post' | t }}">
+                            {% endform %}
+                        </div>
+
+                    </div>
+                {% endpaginate %}
+            {% endif %}
+
+
+        </article>
+
+    </div>
+</div>
+{% schema %}
+    {
+    "name": {
+    "en": "Article pages",
+    "de": "Artikelseiten",
+    "es": "Páginas de artículos",
+    "fr": "Pages d'articles",
+    "pt-PT": "Páginas de artigos"
+    },
+    "settings": [
+    {
+    "type": "image_picker",
+    "id": "blog-sidebar-image",
+    "label": {
+    "en": "Image",
+    "de": "Bild",
+    "es": "Imagen",
+    "fr": "Image",
+    "pt-PT": "Imagem"
+    }
+    },
+    {
+    "type": "url",
+    "id": "blog-sidebar-link",
+    "label": {
+    "en": "Link",
+    "de": "Link",
+    "es": "Enlace",
+    "fr": "Lien",
+    "pt-PT": "Ligação"
+    }
+    },
+    {
+    "type": "checkbox",
+    "id": "show_blog_tags",
+    "label": {
+    "en": "Show tags",
+    "de": "Tags anzeigen",
+    "es": "Mostrar etiquetas",
+    "fr": "Afficher les étiquettes",
+    "pt-PT": "Mostrar etiquetas"
+    },
+    "default": false
+    },
+    {
+    "type": "checkbox",
+    "id": "blog_show_date",
+    "label": {
+    "en": "Show date",
+    "de": "Datum anzeigen",
+    "es": "Mostrar fecha",
+    "fr": "Date d'affichage",
+    "pt-PT": "Mostrar data"
+    },
+    "default": false
+    }
+    ]
+    }
+{% endschema %}

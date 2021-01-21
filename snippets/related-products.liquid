@@ -1,0 +1,30 @@
+{% if section.settings.enable_related_product %}
+    {% for tag in product.tags %}
+        {% if tag contains 'related' %}
+            {% comment ls-rpl %}{% assign product_handle = tag | split: ':' | last %}{% endcomment %}{%- capture LS_TAG -%}{%- render "ls-tag", tag: tag, resource: product -%}{%- endcapture -%}{% assign product_handle = LS_TAG | split: ':' | last %}{% comment /ls-rpl %}{% endcomment %}
+        {% endif %}
+    {% endfor %}
+    {% if product_handle != blank %}
+        <div class=" related-products products-slider">
+            {% if section.settings.related_product_title!= blank %}
+                <h2 class="text-center">{{ section.settings.related_product_title }}</h2>
+            {% endif %}
+            <div class="js-product-related ">
+                {% for tag in product.tags %}
+                    {% if tag contains 'related' %}
+                        {% assign product_handle = tag | split: ':' | last %}
+                        {% for product in collections['all'].products %}
+                            {% if product.handle == product_handle %}
+                                <div class="grid__item">
+                                    <div class="grid-view-item">
+                                        {% include 'grid-view-item' %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+{% endif %}

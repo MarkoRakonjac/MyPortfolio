@@ -1,0 +1,169 @@
+{% assign index = 0 %}
+{% if section.settings.enable_related_product %}
+    {% for tag in product.tags %}
+        {% if tag contains 'related:' %}
+            {% comment ls-rpl %}{% assign product_handle = tag | split: ':' | last %}{% endcomment %}{%- capture LS_TAG -%}{%- render "ls-tag", tag: tag, resource: product -%}{%- endcapture -%}{% assign product_handle = LS_TAG | split: ':' | last %}{% comment /ls-rpl %}{% endcomment %}
+        {% endif %}
+    {% endfor %}
+    {% if product_handle != blank %}
+        {% capture tag_products %}
+            {% for tag in product.tags %}
+                {% if tag contains 'related:' %}
+                    {% assign product_handle = tag | split: ':' | last %}
+                    {% for product in collections['all'].products %}
+                        {% if product.handle == product_handle %}
+                            {% assign product_out_of_campaign = false %}
+                            {% if  settings.show_out_of_campaign %}
+                                {% for tag in product.tags %}
+                                    {% if tag == settings.out_of_campaign_tag %}
+                                        {% assign product_out_of_campaign = true %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                            {% if product.available  and product_out_of_campaign==false %}
+                                {% assign index = index | plus:1 %}
+                                <div class="grid__item js-product-rec" data-id="{{ product.id }}">
+                                    <div class="grid-view-item">
+                                        {% include 'grid-view-item' %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+        {% endcapture %}
+    {% endif %}
+{% endif %}
+
+    {% capture rel_products %}
+    {% assign productId = product.id %}
+        {% for collection in product.collections %}
+            {% for product in collection.products %}
+                {% if productId != product.id  and index < 50 %}
+                    {% comment %}
+                        Check if the product is on sale and set a variable to be used below.
+                    {% endcomment %}
+                    {% assign on_sale = false %}
+                    {% if product.compare_at_price > product.price %}
+                        {% assign on_sale = true %}
+                    {% endif %}
+
+                    {% comment %}
+                        Check if the product is sold out and set a variable to be used below.
+                    {% endcomment %}
+                    {% assign sold_out = true %}
+                    {% if product.available %}
+                        {% assign sold_out = false %}
+                    {% endif %}
+                    {% assign product_out_of_campaign = false %}
+                    {% if  settings.show_out_of_campaign %}
+                        {% for tag in product.tags %}
+                            {% if tag == settings.out_of_campaign_tag %}
+                                {% assign product_out_of_campaign = true %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    {% if product.available and product_out_of_campaign==false %}
+                        {% assign index = index | plus:1 %}
+                        <div class="grid__item js-product-rec " data-id="{{ product.id }}">
+                            <div class="grid-view-item">
+                                {% include 'grid-view-item' %}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    {% endcapture %}
+
+{%- if  section.settings.enable_related_product and index > 0 %}
+    <div class="product-recommendations" data-product-id="{{ product.id }}" data-limit="8"
+         data-recommendations-url="{{ routes.product_recommendations_url }}">
+        <div class="product-page-related-products product-sticker-stop" style="opacity: 0;">
+            <div class="wrapper main-content{% if section.settings.match-height %} products--match-height{% endif %} products--match-height"
+                 role="main">
+                <aside class="grid">
+                    <div class="grid__item">
+                        {% unless section.settings.product_recommendations_heading == blank %}
+                            <div class="sitewide--title-wrapper js-product-rec-ttl" >
+                                <h2 class="page--title">{{ section.settings.product_recommendations_heading }}</h2>
+                            </div>
+                        {% endunless %}
+                        <div class="product-recommendations__slideshow products-slider">
+                            {{ tag_products }}
+                            {{ rel_products }}
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </div>
+{%- endif -%}
+
+{% schema %}
+    {
+    "name": {
+    "en": "Product recommendations",
+    "de": "Produktempfehlungen",
+    "es": "Recomendaciones de productos",
+    "fr": "Recommandations de produits",
+    "pt-PT": "Recomendações de produtos"
+    },
+    "settings": [
+
+    {
+    "type": "text",
+    "id": "product_recommendations_heading",
+    "label": {
+    "en": "Heading",
+    "de": "Überschrift",
+    "es": "Encabezado",
+    "fr": "Rubrique",
+    "pt-PT": "Título"
+    },
+    "default": {
+    "en": "You may also like",
+    "de": "Ihnen könnte auch gefallen",
+    "es": "También podría gustarle",
+    "fr": "Vous aimerez peut-être aussi",
+    "pt-PT": "Também poderá gostar de"
+    }
+    },
+    {
+    "type": "checkbox",
+    "id": "quick_shop_enable",
+    "label": {
+    "en": "Show 'Quick view'",
+    "de": "Schnellansicht' anzeigen",
+    "es": "Mostrar 'Vista rápida'",
+    "fr": "Afficher 'Vue rapide'.",
+    "pt-PT": "Mostrar \"Visualização rápida\""
+    },
+    "default": false
+    },
+    {
+    "type": "checkbox",
+    "id": "match-height",
+    "label": {
+    "en": "Enable auto-height",
+    "de": "Automatische Höhe aktivieren",
+    "es": "Habilitar altura automática",
+    "fr": "Activer la hauteur automatique",
+    "pt-PT": "Ativar configuração automática de altura"
+    },
+    "default": false
+    },
+    {
+    "type": "header",
+    "content": "Related Product"
+    },
+    {
+    "type": "checkbox",
+    "id": "enable_related_product",
+    "label": "Enable?",
+    "default": true
+    }
+    ]
+    }
+{% endschema %}

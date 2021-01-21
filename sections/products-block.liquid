@@ -1,0 +1,258 @@
+<div class="homepage-sections-wrapper homepage-sections-wrapper--white">
+
+<div class="wrapper show-on-scroll">
+
+<div class="homepage-indiv-section-wrapper">
+	<div class="sitewide--title-wrapper">
+    {% if section.settings.title != '' %}
+		  <h2 class="homepage-sections--title">{{ section.settings.title | escape }}</h2>
+    {% endif %}
+	</div>
+
+	{% if section.settings.richtext != '' %}
+	<div class="grid">
+		<div class="grid__item large--one-half push--large--one-quarter">
+			<div class="homepage-sections--description">{{ section.settings.richtext }}</div>
+		</div>
+	</div>
+	{% endif %}
+
+	<div class="homepage-featured-products-grid">
+
+		{%- assign collection = collections[section.settings.collection] -%}
+
+		{% for product in collection.products limit:6 %}
+			<div class="gutter-sizer"></div>
+			<!-- /snippets/product-grid-item.liquid -->
+{% comment %}
+
+  This snippet is used to showcase each product during the loop,
+  'for product in collection.products' in collection.liquid.
+
+  A liquid variable (grid_item_width) is set just before the this
+  snippet is included to change the size of the container.
+  Once the variable is set on a page, all future instances of this
+  snippet will use that width. Overwrite the variable to adjust this.
+
+  Example
+    - assign grid_item_width = 'large--one-quarter medium--one-half'
+
+{% endcomment %}
+
+{% comment %}
+  Set the default grid_item_width if no variable is set
+{% endcomment %}
+{% unless grid_item_width %}
+  {% assign grid_item_width = 'large--one-third medium--one-half' %}
+{% endunless %}
+
+{% comment %}
+  Check if the product is on sale and set a variable to be used below.
+{% endcomment %}
+{% assign on_sale = false %}
+{% if product.compare_at_price > product.price %}
+  {% assign on_sale = true %}
+{% endif %}
+
+{% comment %}
+  Check if the product is sold out and set a variable to be used below.
+{% endcomment %}
+{% assign sold_out = true %}
+{% if product.available %}
+  {% assign sold_out = false %}
+{% endif %}
+{% assign product_out_of_campaign = false %}
+            {% if  settings.show_out_of_campaign %}
+            {% for tag in product.tags %}
+                {% if tag == settings.out_of_campaign_tag %}
+                    {% assign product_out_of_campaign = true %}
+                {% endif %}
+            {% endfor %}
+            {% endif %}
+<div class="homepage-featured-grid-item{% cycle '', '', ' homepage-featured-grid-item--width2', ' homepage-featured-grid-item--width2', '', '' %}">
+
+  <a href="{{ product.url | within: collection }}" class="grid__image">
+    {% assign image = product.media[0].preview_image %}
+    {% capture props %}style="max-width: {{ image.width }}px; margin: 0"{% endcapture %}
+    {% include 'responsive-image' with image, alt: image.alt, props: props %}
+      {% if product_out_of_campaign and settings.show_out_of_campaign %}
+          <div class="sold-out-wrap"></div>
+      {% else %}
+          {% if settings.enable-sold-out-badge  and product.available== false %}
+              <div class="sold-out-wrap"></div>
+          {% endif %}
+      {% endif %}
+  </a>
+
+  <div class="homepage-featured-grid-item-details js-ajax-add-to-cart" data-id="{{ product.id }}">
+	  <p class="product-grid--title">
+	    <a href="{{ product.url | within: collection }}">{{ product.title }}</a>
+	  </p>
+		<p class="product-grid--price">
+			{% include 'product-grid-item-price' %}
+		</p>
+      {% assign formId ="AddToCartForm-" | append :  product.id  %}
+      {% form 'product', product, id: formId %}
+          <input type="hidden" name="quantity" value="1"/>
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}"/>
+          {% if product.metafields.products["Tax percentage"] == blank   or  shop.taxes_included   %}
+          {% else %}
+              {% assign iva = product.metafields.products["Tax percentage"] | replace : "%", "" %}
+              <input type="hidden" name="properties[iva]" value="{{ iva }}">
+          {% endif %}
+          {% include "pack-properties" %}
+          {% if  product_out_of_campaign %}
+              <a href="{{ product.url | within: collection }}" class="btn product-grid__btn ">
+                  {{ 'products.product.more_info' | t }}
+              </a>
+          {% else %}
+              {% if product.available %}
+                  {% if product.has_only_default_variant %}
+                      <button type="submit" name="add" id="AddToCart-{{ product.id }}"
+                              data-use-ajax="true"
+                              class="btn product-grid__btn loader__wrapper">
+                          <span class="loader"></span>
+                          <span class="loader__text"
+                                id="AddToCartText-{{ product.id }}">{{ 'products.product.add_to_cart' | t }}</span>
+                      </button>
+                  {% else %}
+                      <a href="{{ product.url | within: collection }}" class="btn product-grid__btn">
+                          {{ 'products.product.select_option' | t }}
+                      </a>
+                  {% endif %}
+              {% else %}
+                  <a href="{{ product.url | within: collection }}" class="btn product-grid__btn ">
+                      {{ 'products.product.more_info' | t }}
+                  </a>
+              {% endif %}
+          {% endif %}
+      {% endform %}
+  </div>
+
+
+    {% if product_out_of_campaign and settings.show_out_of_campaign %}
+        <div class="sold-out-badge badge out-of-campaign--collection-label">{{ 'products.product.out_of_campaign' | t }}</div>
+    {% else %}
+        {% if settings.enable-sold-out-badge  and product.available== false %}
+            <div class="sold-out-badge badge sold-out--collection-label">{{ 'products.product.sold_out' | t }}</div>
+        {% else %}
+
+            {% if product.compare_at_price_max > product.price and product.available and settings.enable-sale-badge %}
+                <div class="sale-badge badge on-sale--collection-label">{{ 'products.product.on_sale' | t }}</div>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+
+
+</div>
+
+		{% else %}
+			{% for i in (1..6) %}
+			<div class="gutter-sizer"></div>
+			<div class="homepage-featured-grid-item{% cycle '', '', ' homepage-featured-grid-item--width2', ' homepage-featured-grid-item--width2', '', '' %}">
+
+  <a href="{{ product.url | within: collection }}" class="grid__image">
+    {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+    {{ 'product-' | append: current | placeholder_svg_tag: 'icon icon--placeholder grid__image' }}
+  </a>
+
+  <div class="homepage-featured-grid-item-details">
+<a href="/admin/products">
+  <p class="product-grid--title">
+    {{ 'homepage.onboarding.product_title' | t }}
+  </p>
+ <p class="product-grid--price">{{ 1999 | money }}</p>
+   </a>
+  </div>
+</div>
+
+			{% endfor %}
+		{% endfor %}
+
+	</div>
+
+	</div>
+
+</div>
+
+</div>
+
+{% schema %}
+{
+    "name": {
+        "en": "Products block",
+        "de": "Produkte-Block",
+        "es": "Bloque de productos",
+        "fr": "Bloc de produits",
+        "pt-PT": "Bloco de produtos"
+    },
+    "class": "products-block-wrapper",
+    "settings": [
+        {
+            "type": "text",
+            "id": "title",
+            "label": {
+                "en": "Heading",
+                "de": "Überschrift",
+                "es": "Encabezado",
+                "fr": "Rubrique",
+                "pt-PT": "Título"
+            },
+            "default": {
+                "en": "Featured products",
+                "de": "Vorgestellte Produkte",
+                "es": "Productos destacados",
+                "fr": "Produits en vedette",
+                "pt-PT": "Produtos em destaque"
+            }
+        },
+        {
+            "type": "richtext",
+            "id": "richtext",
+            "label": {
+                "en": "Description",
+                "de": "Beschreibung",
+                "es": "Descripción",
+                "fr": "Description",
+                "pt-PT": "Descrição"
+            },
+            "info": {
+                "en": "Optional",
+                "de": "Optional",
+                "es": "Opcional",
+                "fr": "Facultatif",
+                "pt-PT": "Opcional"
+            }
+        },
+        {
+            "id": "collection",
+            "type": "collection",
+            "label": {
+                "en": "Collection",
+                "de": "Kollektion",
+                "es": "Colección",
+                "fr": "Collection",
+                "pt-PT": "Coleção"
+            }
+        }
+    ],
+    "presets": [
+        {
+            "name": {
+                "en": "Products block",
+                "de": "Produkte-Block",
+                "es": "Bloque de productos",
+                "fr": "Bloc de produits",
+                "pt-PT": "Bloco de produtos"
+            },
+            "category": {
+                "en": "Collection",
+                "de": "Kollektion",
+                "es": "Colección",
+                "fr": "Collection",
+                "pt-PT": "Coleção"
+            }
+        }
+    ]
+}
+{% endschema %}

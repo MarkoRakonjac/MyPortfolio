@@ -1,0 +1,182 @@
+{% if section.blocks.size > 0 %}
+    <div class="app-nav__holder">
+        <div class="app-nav">
+            {% for block in section.blocks %}
+                {% capture icon %}
+                    {% case block.settings.menu_item %}
+                    {% when 'recipes' %}
+                        <div class="app-nav__icon">
+													{% if block.settings.icon_svg != blank %}
+													{{block.settings.icon_svg}}
+												{% else %}
+													{% if block.settings.icon_png != blank %}
+														{%- assign img_url = block.settings.icon_png | img_url -%}
+														<img src="{{ img_url }}" alt="">
+												{% endif %}
+											{% endif %}
+                        </div>
+                    {% when 'truffles' %}
+                        <div class="app-nav__icon--mushrooms">
+													{% if block.settings.icon_svg != blank %}
+													{{block.settings.icon_svg}}
+												{% else %}
+													{% if block.settings.icon_png != blank %}
+														{%- assign img_url = block.settings.icon_png | img_url -%}
+														<img src="{{ img_url }}" alt="">
+												{% endif %}
+											{% endif %}
+                        </div>
+                    {% when 'mushrooms' %}
+                        <div class="app-nav__icon app-nav__icon--mushrooms">
+													{% if block.settings.icon_svg != blank %}
+													{{block.settings.icon_svg}}
+												{% else %}
+													{% if block.settings.icon_png != blank %}
+														{%- assign img_url = block.settings.icon_png | img_url -%}
+														<img src="{{ img_url }}" alt="">
+												{% endif %}
+											{% endif %}
+                        </div>
+                    {% when 'sales' %}
+                        <div class="app-nav__icon">
+														{% if block.settings.icon_svg != blank %}
+															{{block.settings.icon_svg}}
+														{% else %}
+															{% if block.settings.icon_png != blank %}
+																{%- assign img_url = block.settings.icon_png | img_url -%}
+																<img src="{{ img_url }}" alt="">
+														{% endif %}
+													{% endif %}
+                        </div>
+                    {% when 'blog' %}
+                        <div class="app-nav__icon">
+													{% if block.settings.icon_svg != blank %}
+													{{block.settings.icon_svg}}
+												{% else %}
+													{% if block.settings.icon_png != blank %}
+														{%- assign img_url = block.settings.icon_png | img_url -%}
+														<img src="{{ img_url }}" alt="">
+												{% endif %}
+											{% endif %}
+                        </div>
+                    {% when 'home' %}
+                        <div class="app-nav__icon">
+													{% if block.settings.icon_svg != blank %}
+													{{block.settings.icon_svg}}
+												{% else %}
+													{% if block.settings.icon_png != blank %}
+														{%- assign img_url = block.settings.icon_png | img_url -%}
+														<img src="{{ img_url }}" alt="">
+												{% endif %}
+											{% endif %}
+                        </div>
+                    {% endcase %}
+                {% endcapture %}
+                {% assign current_url = '' %}
+                {% case template %}
+                {% when 'index' %}
+                {% assign current_url = page.url %}
+                {% when 'page' %}
+                {% assign current_url = page.url %}
+                {% when 'blog' %}
+                {% assign current_url = blog.url %}
+                {% when 'article' %}
+                {% assign current_url = blog.url %}
+                {% when 'collection' %}
+                {% assign current_url = collection.url %}
+                {% when 'product' %}
+                {% assign current_url = product.url %}
+                {% endcase %}
+                {% if block.settings.ttl!= blank and block.settings.url!= blank %}
+                    <div class="app-nav__item {% if current_url ==  block.settings.url %}app-nav__item--active{% endif %}">
+                        <a href="{{ block.settings.url }}" class="app-nav__link">
+                            {{ icon }}
+														<div class="app-nav__ttl">{{ block.settings.ttl }}</div>
+                        </a></div>
+                {% endif %}
+            {% endfor %}
+            {% if shop.customer_accounts_enabled %}
+            {% if customer %}
+            <div class="app-nav__item {% if template contains 'customer' %}app-nav__item--active{% endif %}">
+                    <a href="{{ routes.account_url }}" title="{{ 'layout.customer.account' | t }}" class="app-nav__link">
+                        <div class="app-nav__icon"> <i class="fa fa-user fa-lg"></i></div>
+                        <div class="app-nav__ttl">{{ 'layout.header.account' | t }}</div>
+                    </a>
+                </div>
+            {% else %}
+                <div class="app-nav__item {% if template contains 'customer' %} app-nav__item--active{% endif %}">
+                    <a href="{{ routes.account_login_url }}" title="{{ 'layout.customer.log_in' | t }}" class="app-nav__link">
+                        <div class="app-nav__icon"> <i class="fa fa-user fa-lg"></i></div>
+                        <div class="app-nav__ttl">{{ 'layout.header.account' | t }}</div>
+                    </a>
+                </div>
+            {% endif %}
+            {% endif %}
+    </div>
+{% endif %}
+{% schema %}
+    {
+    "name": "App navigation",
+    "blocks": [
+    {
+    "type": "text",
+    "name": "Navigation item",
+    "settings": [
+
+    {
+    "type": "select",
+    "id": "menu_item",
+    "label": "Menu item",
+    "default": "home",
+    "options": [
+    {
+    "value": "home",
+    "label": "Home"
+    },
+    {
+    "value": "truffles",
+    "label": "Truffles"
+    },
+    {
+    "value": "mushrooms",
+    "label": "Mushrooms"
+    },
+    {
+    "value": "recipes",
+    "label": "Recipes"
+    },{
+    "value": "blog",
+    "label": "Blog"
+    },{
+    "value": "sales",
+    "label": "Sales"
+    }
+    ]
+		},
+		{
+			"type": "text",
+			"id": "icon_svg",
+			"label": "Icon SVG",
+			"info": "Add <svg>Icon</svg>"
+			},
+			{
+				"type": "image_picker",
+				"id": "icon_png",
+				"label": "Icon PNG",
+				"info": "Upload png icon"
+		},
+    {
+    "type": "text",
+    "id": "ttl",
+    "label": "Title"
+    },
+    {
+    "type": "url",
+    "id": "url",
+    "label": "Url"
+    }
+    ]
+    }
+    ]
+    }
+{% endschema %}

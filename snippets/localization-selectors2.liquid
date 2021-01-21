@@ -1,0 +1,43 @@
+{% if settings.geoip_enabled %}
+
+    <div class="localization-selector localization-selector__locale">
+        <div class="wetheme-dropdown fit-current wetheme-dropdown--closed wetheme-dropdown--down">
+            <div class="wetheme-dropdown__wrapper wetheme-dropdown__wrapper--custom">
+                <button type="button"><span class="header--supporting-text">
+                        {% if settings.lang1_url != blank and settings.lang1 != blank %}
+                            {% if settings.lang1_cur == true %}{{ settings.lang1 }} {% endif %}
+                        {% endif %}
+                        {% if settings.lang2_url != blank and settings.lang2 != blank %}
+                            {% if settings.lang2_cur == true %}{{ settings.lang2 }} {% endif %}
+                        {% endif %}
+                        {% if settings.lang3_url != blank and settings.lang3 != blank %}
+                            {% if settings.lang3_cur == true %}{{ settings.lang3 }} {% endif %}
+                        {% endif %}
+                    </span>
+                    <span class="icon-dropdown"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                     class="feather feather-chevron-down"><polyline
+                                    points="6 9 12 15 18 9"></polyline></svg></span></button>
+                <ul id="wetheme-dropdown-2-dropdown">
+                    {% if settings.lang1_url != blank and settings.lang1 != blank %}
+                        <li {% if settings.lang1_cur == true %}class="selected"{% endif %}>
+                            <a href="{{ settings.lang1_url }}">{{ settings.lang1 }}</a>
+                        </li>
+                    {% endif %}
+                    {% if settings.lang2_url != blank and settings.lang2 != blank %}
+
+                        <li {% if settings.lang2_cur == true %}class="selected"{% endif %}>
+                            <a href="{{ settings.lang2_url }}">{{ settings.lang2 }}</a>
+                        </li>
+                    {% endif %}
+                    {% if settings.lang3_url!= blank and settings.lang3!= blank %}
+                        <li {% if settings.lang3_cur == true %}class="selected"{% endif %}>
+                            <a href="{{ settings.lang3_url }}">{{ settings.lang3 }}</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endif %}
